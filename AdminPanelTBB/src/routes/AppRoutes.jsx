@@ -10,7 +10,7 @@ import SettingsPage from '../pages/Settings/SettingsPage';
 import LoginPage from '../pages/Auth/LoginPage';
 import ForgotPasswordPage from '../pages/Auth/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/Auth/ResetPasswordPage';
-import ProtectedRoute from "../components/ProtectedRoute.jsx";
+import ProtectedRoute from "../components/protectedRoute.jsx";
 
 const AppRoutes = () => {
   return (
