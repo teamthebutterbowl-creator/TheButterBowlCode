@@ -1,0 +1,509 @@
+/* ── Hide search bar on Settings page ── */
+.admin-container:has(.settings-page) .header-search {
+  display: none;
+}
+
+/* ── Settings Page ── */
+.settings-page {
+  display: grid;
+  gap: 12px;
+}
+
+/* ── 2-Column Grid ── */
+.settings-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* ── Section ── */
+.settings-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Section Header ── */
+.settings-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-section-header h3 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-section-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.settings-section-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.settings-section-icon.restaurant {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.settings-section-icon.admin {
+  background: #ede9fe;
+  color: var(--purple);
+}
+
+.settings-section-icon.theme {
+  background: var(--info-light);
+  color: var(--info);
+}
+
+.settings-section-icon.actions {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+/* ── Edit / Cancel Button ── */
+.settings-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.settings-edit-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+.settings-edit-btn:hover {
+  background: var(--surface-alt);
+  color: var(--primary);
+}
+
+/* ── Section Body ── */
+.settings-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── View Mode: Logo + Info Row ── */
+.settings-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+}
+
+.settings-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.settings-info-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.settings-info-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.settings-info-detail {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ── View Mode: Label → Value Rows ── */
+.settings-value-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.settings-value-row + .settings-value-row {
+  border-top: 1px solid var(--border-light);
+}
+
+.settings-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.settings-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: right;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Text Link Button (Change Password) ── */
+.settings-text-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  align-self: flex-start;
+}
+
+.settings-text-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+.settings-text-btn:hover {
+  color: var(--primary-hover);
+}
+
+/* ── Edit Mode: Inline Save/Cancel ── */
+.settings-inline-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+/* ── Edit Mode: Compact Logo Upload ── */
+.settings-logo-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.settings-upload-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.settings-upload-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.settings-upload-trigger svg {
+  width: 14px;
+  height: 14px;
+}
+
+.settings-upload-trigger input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.settings-upload-trigger:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+/* ── Theme Toggle ── */
+.theme-toggle-group {
+  display: flex;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 2px;
+}
+
+.theme-toggle-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.theme-toggle-btn:hover {
+  color: var(--text-primary);
+}
+
+.theme-toggle-btn.active {
+  background: var(--card);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-xs);
+}
+
+/* ── Actions ── */
+.settings-actions-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-actions-stack .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ── Danger Zone ── */
+.settings-danger-zone {
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  background: var(--card);
+}
+
+.settings-danger-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.settings-danger-zone h4 {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--danger);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.settings-danger-zone p {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.settings-danger-zone .btn {
+  flex-shrink: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .settings-grid-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-danger-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .settings-danger-content .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-page {
+    gap: 8px;
+  }
+
+  .settings-section {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .settings-grid-layout {
+    gap: 8px;
+  }
+
+  .settings-danger-zone {
+    padding: 10px 12px;
+  }
+}
+/* ── Toast ──────────────────────────────────────────────────────────────── */
+.settings-toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  animation: slideIn 0.2s ease;
+}
+.settings-toast--success {
+  background: #1a1a2e;
+  color: #fff;
+}
+.settings-toast--error {
+  background: #e53e3e;
+  color: #fff;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Modal Overlay ───────────────────────────────────────────────────────── */
+.settings-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+  backdrop-filter: blur(2px);
+}
+
+.settings-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 28px 24px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+}
+
+.settings-modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 8px;
+}
+
+.settings-modal-desc {
+  font-size: 13.5px;
+  color: #666;
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+/* Password input inside modal */
+.settings-modal-pw-wrap {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.settings-modal-input {
+  width: 100%;
+  padding: 10px 40px 10px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a2e;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+.settings-modal-input:focus {
+  border-color: #e8472a;
+}
+
+.settings-modal-eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.settings-modal-error {
+  color: #e53e3e;
+  font-size: 13px;
+  margin: -4px 0 12px;
+}
+
+.settings-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}

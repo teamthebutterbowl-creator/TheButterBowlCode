@@ -1,23 +1,48 @@
 import "dotenv/config";
 import app from "./app.js";
 import connectDB from "./config/db.js";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
-// Load env vars before anything else that reads process.env
+// Create HTTP server
+const server = createServer(app);
 
+// Attach socket.io
+const io = new Server(server, {
+  cors: {
+    origin: [process.env.FRONTEND_URL,process.env.ADMIN_DASHBOARD_URL],
+    credentials: true,
+  },
+});
+
+// make io accessible everywhere
+app.set("io", io);
+
+// socket connection
+io.on("connection", (socket) => {
+  console.log("🟢 User connected:", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("🔴 User disconnected:", socket.id);
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 
-/**
- * Start the server:
- * 1. Connect to MongoDB
- * 2. Listen for HTTP requests
- */
+// connect DB + start server
 const startServer = async () => {
+  try{
   await connectDB();
 
-  app.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV || "development"} mode on port ${PORT}`);
+  server.listen(PORT, () => {
+    console.log(
+      `Server running in ${process.env.NODE_ENV || "development"} mode on port ${PORT}`
+    );
   });
+}catch(error){
+  console.error("Database connection failed:", error);  //if db connection fails 
+  process.exit(1);
+}
 };
 
 startServer();

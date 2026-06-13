@@ -1,0 +1,22 @@
+.pagination-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px 0;
+}
+
+.pagination-item {
+  min-width: 42px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  cursor: pointer;
+}
+
+.pagination-item.active {
+  background: #ff4b3e;
+  border-color: #ff4b3e;
+  color: #ffffff;
+}

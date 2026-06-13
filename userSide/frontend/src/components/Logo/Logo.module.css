@@ -1,0 +1,63 @@
+/* .logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+ 
+}
+
+.full {
+  height: 2.75rem;
+  width: auto;
+}
+
+.compact {
+  height: 2.25rem;
+  width: auto;
+
+} */
+/* .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
+
+.logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.logo img {
+  width: 90%;
+  height: 90%;
+  object-fit: cover;
+}
+
+.full,
+.compact {
+  width: 60px; /* apne hisaab se change kar lena */
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .full {
+    height: 3rem;
+  }
+
+  .compact {
+    height: 2.5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .full {
+    height: 2.25rem;
+  }
+
+  .compact {
+    height: 2rem;
+  }
+}

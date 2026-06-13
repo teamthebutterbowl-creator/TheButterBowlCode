@@ -1,0 +1,106 @@
+:root {
+  /* Background & Surface */
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --surface: #fafbfc;
+  --surface-alt: #f3f5f8;
+  
+  /* Border & Dividers */
+  --border: #e5e7eb;
+  --border-light: #f0f1f3;
+  
+  /* Text Colors */
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  
+  /* Branding Colors */
+  --primary: #ff4b3e;
+  --primary-soft: #ffebea;
+  --primary-hover: #ff3d2e;
+  --accent: #ff6a3d;
+  --purple: #5b2eff;
+  
+  /* Status Colors */
+  --success: #10b981;
+  --success-light: #d1fae5;
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+  --danger: #ef4444;
+  --danger-light: #fee2e2;
+  --info: #3b82f6;
+  --info-light: #dbeafe;
+  
+  /* Sidebar */
+  --sidebar: #031633;
+  --sidebar-alt: #041f4d;
+  
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.1);
+  
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+}
+
+[data-theme="dark"] {
+  /* Background & Surface */
+  --bg: #0f1117;
+  --card: #1a1d27;
+  --surface: #20232f;
+  --surface-alt: #262a38;
+
+  /* Border & Dividers */
+  --border: #2e323f;
+  --border-light: #262a38;
+
+  /* Text Colors */
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-tertiary: #6b7280;
+
+  /* Branding Colors (mostly unchanged, soft variants tuned) */
+  --primary: #ff4b3e;
+  --primary-soft: #3a2422;
+  --primary-hover: #ff6354;
+  --accent: #ff6a3d;
+  --purple: #8b6bff;
+
+  /* Status Colors */
+  --success: #34d399;
+  --success-light: #103d2c;
+  --warning: #fbbf24;
+  --warning-light: #3f2f0c;
+  --danger: #f87171;
+  --danger-light: #3f1d1d;
+  --info: #60a5fa;
+  --info-light: #16243f;
+
+  /* Sidebar */
+  --sidebar: #031633;
+  --sidebar-alt: #041f4d;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.45);
+  --shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.5);
+}

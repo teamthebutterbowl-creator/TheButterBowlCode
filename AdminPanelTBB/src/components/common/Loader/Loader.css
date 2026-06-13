@@ -1,0 +1,20 @@
+.loader-overlay {
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+}
+
+.loader-ring {
+  width: 48px;
+  height: 48px;
+  border: 6px solid #e5e7eb;
+  border-top-color: #ff4b3e;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

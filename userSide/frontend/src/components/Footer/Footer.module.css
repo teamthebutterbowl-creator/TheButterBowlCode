@@ -1,0 +1,126 @@
+.footer {
+  background:#09261b;
+   color: var(--color-bg); 
+  
+  padding-top: var(--space-3xl);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-2xl);
+  padding-bottom: var(--space-3xl);
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-md);
+}
+.brandCol img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tagline {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-style: italic;
+  margin-top: 8px;
+  color: var(--color-gold);
+}
+
+.social {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(248, 243, 234, 0.25);
+  border-radius: 50%;
+  color: var(--color-bg);
+  transition:
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.socialLink:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
+.colTitle {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: var(--space-lg);
+}
+
+.linkList a,
+.contact a {
+  color: rgba(248, 243, 234, 0.85);
+  font-size: 0.9375rem;
+  transition: color var(--transition-fast);
+}
+
+.linkList a:hover,
+.contact a:hover {
+  color: var(--color-gold);
+}
+
+.linkList li + li {
+  margin-top: var(--space-sm);
+}
+
+.hours {
+  color: rgba(248, 243, 234, 0.85);
+  font-size: 0.9375rem;
+}
+
+.contact {
+  font-style: normal;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.bottom {
+  border-top: 1px solid rgba(248, 243, 234, 0.12);
+  padding-block: var(--space-lg);
+}
+
+.bottom p {
+  font-size: 0.8125rem;
+  color: rgba(248, 243, 234, 0.55);
+  text-align: center;
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl) var(--space-lg);
+  }
+
+  .brandCol {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1.8fr 1fr 1fr 1fr;
+    gap: var(--space-xl);
+  }
+}

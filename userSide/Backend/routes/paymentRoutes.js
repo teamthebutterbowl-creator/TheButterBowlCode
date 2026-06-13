@@ -1,25 +1,32 @@
-// Express Router — groups payment routes in one file
 import express from "express";
-// Payment controller functions
 import {
   createRazorpayOrder,
   verifyPayment,
   handleCOD,
 } from "../controllers/paymentController.js";
-// JWT auth middleware — required for protected payment routes
 import { optionalAuth } from "../middleware/authMiddleware.js";
+import rateLimit from "express-rate-limit";
 
-// Create a new router instance for payment routes
 const router = express.Router();
 
-// POST /api/payment/create-order — create Razorpay order (logged-in users)
-router.post("/create-order", optionalAuth, createRazorpayOrder);
+const paymentLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many payment requests. Please try again later.",
+  },
+});
 
-// POST /api/payment/verify — verify Razorpay payment after checkout (logged-in users)
-router.post("/verify", optionalAuth, verifyPayment);
+// POST /api/payment/create-order
+router.post("/create-order", paymentLimiter, optionalAuth, createRazorpayOrder);
 
-// POST /api/payment/cod — confirm COD order (public — guests allowed)
-router.post("/cod", handleCOD);
+// POST /api/payment/verify
+router.post("/verify", paymentLimiter, optionalAuth, verifyPayment);
 
-// Export router so app.js can mount it at /api/payment
+// POST /api/payment/cod
+router.post("/cod", paymentLimiter, optionalAuth, handleCOD);
+
 export default router;

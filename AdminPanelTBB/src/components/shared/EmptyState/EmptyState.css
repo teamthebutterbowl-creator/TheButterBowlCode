@@ -1,0 +1,22 @@
+.empty-state-card {
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 22px;
+  border: 1px dashed #e5e7eb;
+  display: grid;
+  gap: 18px;
+  min-height: 180px;
+  align-items: center;
+}
+
+.empty-state-title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  color: #111827;
+}
+
+.empty-state-description {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}

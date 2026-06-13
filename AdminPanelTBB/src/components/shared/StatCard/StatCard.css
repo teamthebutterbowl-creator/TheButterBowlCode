@@ -1,0 +1,244 @@
+/* .stat-card {
+  background: var(--card);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 16px;
+  min-width: 200px;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.stat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.stat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-card-title span {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.stat-badge {
+  font-size: 11px;
+  color: #ffffff;
+  background: var(--primary);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.stat-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(255, 75, 62, 0.1) 0%, rgba(255, 106, 61, 0.08) 100%);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.stat-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-card-value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.stat-card-detail {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.stat-card-detail.trending-up {
+  color: var(--success);
+}
+
+.stat-card-detail.trending-down {
+  color: var(--warning);
+}
+
+.stat-card-detail svg {
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .stat-card {
+    min-width: 160px;
+    min-height: 100px;
+    padding: 14px;
+  }
+
+  .stat-card-value {
+    font-size: 24px;
+  }
+
+  .stat-card-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  .stat-card {
+    min-width: 100%;
+    min-height: 110px;
+  }
+} */
+
+.stat-card {
+  background: var(--card);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 16px;
+  min-width: 200px;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  min-width: 0;
+}
+
+.stat-card:hover {
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.stat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.stat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-card-title span {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.stat-badge {
+  background: rgba(255, 90, 60, 0.12);
+  color: #ff5a3c;
+  border: 1px solid rgba(255, 90, 60, 0.2);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.stat-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(255, 75, 62, 0.1) 0%, rgba(255, 106, 61, 0.08) 100%);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.stat-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-card-value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.stat-card-detail {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.stat-card-detail.trending-up {
+  color: var(--success);
+}
+
+.stat-card-detail.trending-down {
+  color: var(--warning);
+}
+
+.stat-card-detail svg {
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .stat-card {
+    min-width: 160px;
+    min-height: 100px;
+    padding: 14px;
+  }
+
+  .stat-card-value {
+    font-size: 24px;
+  }
+
+  .stat-card-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  .stat-card {
+    min-width: 100%;
+    min-height: 110px;
+  }
+}

@@ -1,0 +1,419 @@
+/**
+ * Checkout.module.css
+ * Place this file at: src/pages/Checkout/Checkout.module.css
+ */
+
+ .page {
+    padding-top: var(--space-xl);
+  }
+  
+  /* ─── Layout: form left + summary right ────────────────────────────────────── */
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+    align-items: start;
+  }
+  
+  /* ─── Form cards ────────────────────────────────────────────────────────────── */
+  .formSection {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .formCard {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    border: 1px solid var(--color-border, #e8e0d5);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  }
+  
+  .cardTitle {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--color-dark);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border, #e8e0d5);
+  }
+  
+  /* ─── Form fields ───────────────────────────────────────────────────────────── */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  
+  .field:last-child {
+    margin-bottom: 0;
+  }
+  
+  .fieldLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  
+  .field input,
+  .field textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--color-border, #ddd);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    background: var(--color-bg);
+    color: var(--color-text);
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  
+  .field input:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--color-gold);
+  }
+  
+  .inputError {
+    border-color: #c45c5c !important;
+  }
+  
+  .error {
+    font-size: 0.8125rem;
+    color: #b33a3a;
+  }
+  
+  /* ─── Payment options ───────────────────────────────────────────────────────── */
+  .paymentOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .paymentOption {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border: 1.5px solid var(--color-border, #ddd);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  
+  .paymentOption input[type='radio'] {
+    /* Hide default radio — we use border styling instead */
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .paymentSelected {
+    border-color: var(--color-green);
+    background: rgba(31, 61, 46, 0.04);
+  }
+  
+  .paymentContent {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .paymentIcon {
+    font-size: 1.5rem;
+  }
+  
+  .paymentTitle {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-dark);
+    margin-bottom: 2px;
+  }
+  
+  .paymentDesc {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  
+  /* ─── API error ─────────────────────────────────────────────────────────────── */
+  .apiError {
+    padding: 14px 16px;
+    background: rgba(180, 60, 60, 0.08);
+    border: 1px solid rgba(180, 60, 60, 0.2);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: #b33a3a;
+  }
+  
+  /* ─── Submit button ─────────────────────────────────────────────────────────── */
+  .submitBtn {
+    width: 100%;
+    min-height: 56px;
+    padding: 0 24px;
+    background: var(--color-gold);
+    color: var(--color-dark);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 12px;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s, transform 0.15s;
+    margin-top: 8px;
+  }
+  
+  .submitBtn:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-2px);
+  }
+  
+  .submitBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* ─── Order summary (right sidebar) ────────────────────────────────────────── */
+  .summarySection {
+    position: sticky;
+    top: 100px;
+  }
+  
+  .summaryCard {
+    /* background: var(--color-green); */
+    background:#09261b;
+    border-radius: 16px;
+    padding: 28px;
+    color: white;
+  }
+  
+  .summaryTitle {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--color-gold);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .summaryItems {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .summaryItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .summaryItem:last-child {
+    border-bottom: none;
+  }
+  
+  .summaryItemName {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  .summaryItemQty {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+  }
+  
+  .summaryItemPrice {
+    font-size: 0.9rem;
+    color: white;
+    font-weight: 500;
+  }
+  
+  .summaryTotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 2px solid var(--color-gold);
+    margin-bottom: 20px;
+  }
+  
+  .summaryTotal span {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+  }
+  
+  .summaryTotal strong {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--color-gold);
+  }
+  
+  .editCartLink {
+    display: block;
+    text-align: center;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+  }
+  
+  .editCartLink:hover {
+    color: var(--color-gold);
+  }
+  
+  /* ─── Empty cart state ──────────────────────────────────────────────────────── */
+  .emptyCart {
+    text-align: center;
+    padding: 80px 20px;
+  }
+  
+  .emptyIcon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 20px;
+  }
+  
+  .emptyCart h2 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--color-dark);
+    margin-bottom: 12px;
+  }
+  
+  .emptyCart p {
+    color: var(--color-text-muted);
+    margin-bottom: 24px;
+  }
+  
+  .menuLink {
+    display: inline-block;
+    padding: 14px 32px;
+    background: var(--color-gold);
+    color: var(--color-dark);
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 8px;
+    transition: opacity 0.2s;
+  }
+  
+  .menuLink:hover {
+    opacity: 0.9;
+  }
+  
+  /* ─── Mobile (390px) ────────────────────────────────────────────────────────── */
+  @media (max-width: 1023px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+  
+    .summarySection {
+      position: static;
+      order: -1; /* Show summary above form on mobile */
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .formCard {
+      padding: 20px 16px;
+    }
+  
+    .summaryCard {
+      padding: 20px 16px;
+    }
+  
+    .submitBtn {
+      min-height: 52px;
+      font-size: 0.9375rem;
+    }
+  }
+  /* Coupon */
+.couponRow {
+  display: flex;
+  gap: 8px;
+}
+
+.couponInput {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+}
+
+.couponBtn {
+  padding: 10px 18px;
+  background: #1F3D2E;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.couponBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.couponApplied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.removeCoupon {
+  background: none;
+  border: none;
+  color: #e53e3e;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Summary breakdown */
+.summaryBreakdown {
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.discountRow {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.summaryFinal {
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+  margin-top: 4px;
+  font-size: 1rem;
+}

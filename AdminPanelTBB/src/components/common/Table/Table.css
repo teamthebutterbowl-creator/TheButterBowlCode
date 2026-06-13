@@ -1,0 +1,241 @@
+.table-container {
+  background: var(--card);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.table-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.table-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.table-component {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 100%;
+}
+
+.table-component thead {
+  background: var(--surface-alt);
+  border-bottom: 1.5px solid var(--border-light);
+}
+
+.table-component th,
+.table-component td {
+  padding: 12px 16px;
+  text-align: left;
+  color: var(--text-primary);
+  font-size: 13px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.table-component th {
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.table-component tbody tr {
+  border-bottom: 1px solid var(--border-light);
+  transition: all 0.18s ease;
+}
+
+.table-component tbody tr:hover {
+  background: var(--surface);
+}
+
+.table-component tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table-component td {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.table-component th.align-right,
+.table-component td.align-right {
+  text-align: right;
+}
+
+.table-component th.align-center,
+.table-component td.align-center {
+  text-align: center;
+}
+
+.table-component td[data-label] {
+  position: relative;
+}
+
+.table-component td[data-label]::before {
+  display: none;
+}
+
+/* Actions Column */
+.actions-column {
+  width: 120px;
+  text-align: center;
+}
+
+.actions-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+}
+
+.action-btn:hover {
+  background: var(--surface-alt);
+  color: var(--text-primary);
+}
+
+.action-btn.view-btn:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--info);
+}
+
+.action-btn.edit-btn:hover {
+  background: rgba(255, 75, 62, 0.1);
+  color: var(--primary);
+}
+
+.action-btn.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+}
+
+.action-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Empty State */
+.table-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  background: var(--surface);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .table-component th,
+  .table-component td {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .action-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .action-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .table-component thead {
+    display: none;
+  }
+
+  .table-component,
+  .table-component tbody,
+  .table-component tr,
+  .table-component td {
+    display: block;
+    width: 100%;
+  }
+
+  .table-component tr {
+    margin-bottom: 16px;
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    background: var(--card);
+    box-shadow: var(--shadow-sm);
+    padding: 16px;
+  }
+
+  .table-component td {
+    padding: 10px 0;
+    border: none;
+  }
+
+  .table-component td[data-label]::before {
+    display: block;
+    content: attr(data-label);
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+  }
+
+  .actions-cell {
+    justify-content: flex-start;
+  }
+
+  .action-buttons {
+    gap: 8px;
+  }
+
+  .action-btn {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.table-component td {
+  white-space: nowrap;
+}
+

@@ -1,0 +1,28 @@
+.stars {
+    display: flex;
+    gap: 2px;
+  }
+  
+  /* Sizes */
+  .small .star  { font-size: 1rem; }
+  .medium .star { font-size: 1.5rem; }
+  .large .star  { font-size: 2rem; }
+  
+  .star {
+    transition: transform 0.1s ease;
+  }
+  
+  /* Filled star — golden */
+  .filled {
+    color: #f59e0b;
+  }
+  
+  /* Empty star — grey */
+  .empty {
+    color: #d1d5db;
+  }
+  
+  /* Hover effect — interactive mode mein */
+  .star:hover {
+    transform: scale(1.2);
+  }

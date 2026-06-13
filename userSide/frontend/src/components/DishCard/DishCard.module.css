@@ -1,0 +1,161 @@
+/* DishCard.module.css — same as original + veg indicator + rating + cursor */
+
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-card);
+}
+
+.imageWrap {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-bg-warm);
+}
+
+.imageWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.card:hover .imageWrap img {
+  transform: scale(1.05);
+}
+
+.body {
+  padding: var(--space-lg);
+}
+
+/* ─── Top row — veg + category ─────────────────────────────── */
+.topRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--space-xs);
+}
+
+/* Veg indicator — green square with dot (FSSAI standard) */
+.vegIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #2d7a47;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.vegDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2d7a47;
+}
+
+/* Category badge */
+.categoryBadge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ─── Name + desc ───────────────────────────────────────────── */
+.name {
+  font-size: 1.375rem;
+  margin-bottom: var(--space-xs);
+}
+
+.desc {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin-bottom: var(--space-md);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--color-text-muted);
+}
+
+/* ─── Footer — price + rating ───────────────────────────────── */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.price {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-gold-dark);
+}
+
+.rating {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.ratingCount {
+  font-weight: 400;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+/* ─── Compact mode ──────────────────────────────────────────── */
+.compact .body {
+  padding: var(--space-md);
+}
+
+.compact .name {
+  font-size: 1.125rem;
+}
+
+.offerBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #e53e3e;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  z-index: 2;
+}
+
+.priceBlock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.originalPrice {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.discountedPrice {
+  color: #e53e3e;
+  font-weight: 700;
+  font-size: 1rem;
+}

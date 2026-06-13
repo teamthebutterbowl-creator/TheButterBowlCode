@@ -5,24 +5,49 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  toggleBestSeller,
+  toggleFeaturedProduct,
+  toggleProductAvailability
 } from "../controllers/productController.js";
 import { uploadProductImage } from "../middleware/upload.js";
+import protect from "../middleware/authMiddleware.js";
+import {adminOnly} from "../middleware/adminMiddleware.js";
 
 const router = express.Router();
 
 // GET /api/products
 router.get("/", getAllProducts);
-
-// GET /api/products/:id
 router.get("/:id", getSingleProduct);
 
-// POST /api/products (multipart field "image" optional)
-router.post("/", uploadProductImage, createProduct);
+// create product
+router.post("/", protect, adminOnly,   uploadProductImage,createProduct);
 
-// PUT /api/products/:id (multipart field "image" optional)
-router.put("/:id", uploadProductImage, updateProduct);
+// update product
+router.put("/:id", protect, adminOnly,uploadProductImage, updateProduct);
 
-// DELETE /api/products/:id
-router.delete("/:id", deleteProduct);
+// soft delete product
+router.delete("/:id", protect, adminOnly, deleteProduct);
+
+// toggle controls
+router.patch(
+  "/:id/toggle-availability",
+  protect,
+  adminOnly,
+  toggleProductAvailability
+);
+
+router.patch(
+  "/:id/toggle-featured",
+  protect,
+  adminOnly,
+  toggleFeaturedProduct
+);
+
+router.patch(
+  "/:id/toggle-bestseller",
+  protect,
+  adminOnly,
+  toggleBestSeller
+);
 
 export default router;

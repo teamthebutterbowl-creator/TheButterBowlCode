@@ -9,7 +9,8 @@ import {
   trackOrder,
 } from "../controllers/orderController.js";
 import protect, { optionalAuth } from "../middleware/authMiddleware.js";
-import roleMiddleware from "../middleware/roleMiddleware.js";
+import {adminOnly} from "../middleware/adminMiddleware.js";
+
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ router.get("/my-orders", protect, getMyOrders);
 router.get("/track/:orderNumber", trackOrder);
 
 // GET /api/orders — admin only
-router.get("/", protect, roleMiddleware("admin", "superAdmin"), getAllOrders);
+router.get("/", protect, adminOnly, getAllOrders);
 
 // GET /api/orders/:id — admin or order owner
 router.get("/:id", protect, getOrderById);
@@ -32,7 +33,7 @@ router.get("/:id", protect, getOrderById);
 router.put(
   "/:id/status",
   protect,
-  roleMiddleware("admin", "superAdmin"),
+  adminOnly,
   updateOrderStatus
 );
 

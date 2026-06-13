@@ -1,0 +1,421 @@
+/**
+ * OrderTracking.module.css
+ * Place this file at: src/pages/OrderTracking/OrderTracking.module.css
+ */
+
+/* ─── Page section ─────────────────────────────────────────────────────────── */
+.section {
+    padding-top: var(--space-2xl);
+  }
+  
+  .wrapper {
+    max-width: 720px;
+    margin-inline: auto;
+  }
+  
+  /* ─── Search box ────────────────────────────────────────────────────────────── */
+  .searchBox {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .searchInput {
+    flex: 1;
+    min-height: 52px;
+    padding: 0 20px;
+    border: 1.5px solid var(--color-border, #ddd);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    background: var(--color-white, #fff);
+    color: var(--color-text);
+    transition: border-color 0.2s;
+  }
+  
+  .searchInput:focus {
+    outline: none;
+    border-color: var(--color-gold);
+  }
+  
+  .searchBtn {
+    min-height: 52px;
+    padding: 0 32px;
+    background: var(--color-gold);
+    color: var(--color-dark);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    white-space: nowrap;
+  }
+  
+  .searchBtn:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+  
+  .searchBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* ─── Tip text ──────────────────────────────────────────────────────────────── */
+  .tip {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2xl);
+  }
+  
+  .tip strong {
+    color: var(--color-green);
+  }
+  
+  /* ─── Results area ──────────────────────────────────────────────────────────── */
+  .results {
+    min-height: 200px;
+  }
+  
+  /* ─── Empty / not found states ──────────────────────────────────────────────── */
+  .emptyState,
+  .notFound {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--color-text-muted);
+  }
+  
+  .emptyIcon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 16px;
+  }
+  
+  .notFoundHint {
+    font-size: 0.875rem;
+    margin-top: 8px;
+    opacity: 0.7;
+  }
+  
+  /* ─── Order card ────────────────────────────────────────────────────────────── */
+  .orderCard {
+    background: var(--color-white, #fff);
+    border: 1px solid var(--color-border, #e8e0d5);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* Order header */
+  .orderHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 24px 28px;
+    background: var(--color-green);
+    gap: 16px;
+  }
+  
+  .orderLabel {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 4px;
+  }
+  
+  .orderNumber {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-gold);
+    letter-spacing: 0.02em;
+  }
+  
+  .orderMeta {
+    text-align: right;
+  }
+  
+  .orderDate {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  
+  /* ─── Stepper section ───────────────────────────────────────────────────────── */
+  .stepperSection {
+    padding: 32px 28px;
+    border-bottom: 1px solid var(--color-border, #e8e0d5);
+  }
+  
+  /* Stepper wrapper */
+  .stepper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+  }
+  
+  /* Each step wrapper */
+  .stepWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+  }
+  
+  /* Step circle */
+  .stepCircle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s;
+  }
+  
+  .stepCompleted {
+    background: rgba(230, 167, 0, 0.15);
+    border: 2px solid var(--color-gold);
+  }
+  
+  .stepActive {
+    background: var(--color-green);
+    border: 2px solid var(--color-green);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(31, 61, 46, 0.3);
+  }
+  
+  .stepPending {
+    background: var(--color-bg, #f8f3ea);
+    border: 2px solid var(--color-border, #ddd);
+    filter: grayscale(1);
+    opacity: 0.5;
+  }
+  
+  /* Step label */
+  .stepLabel {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    text-align: center;
+    max-width: 80px;
+  }
+  
+  .stepLabelActive {
+    color: var(--color-green);
+    font-weight: 700;
+  }
+  
+  /* Connector line between steps */
+  .stepLine {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: var(--color-border, #ddd);
+    z-index: 0;
+  }
+  
+  .stepLineCompleted {
+    background: var(--color-gold);
+  }
+  
+  /* Cancelled state */
+  .cancelled {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px;
+    background: rgba(180, 60, 60, 0.08);
+    border-radius: 8px;
+    border: 1px solid rgba(180, 60, 60, 0.2);
+  }
+  
+  .cancelledIcon {
+    font-size: 1.5rem;
+  }
+  
+  .cancelledText {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #b33a3a;
+  }
+  
+  /* ─── Info grid ─────────────────────────────────────────────────────────────── */
+  .infoGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--color-border, #e8e0d5);
+    border-bottom: 1px solid var(--color-border, #e8e0d5);
+  }
+  
+  .infoBox {
+    padding: 20px 24px;
+    background: var(--color-white, #fff);
+  }
+  
+  .infoLabel {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+  }
+  
+  .infoValue {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+  
+  .statusPaid {
+    color: #2d7a47;
+  }
+  
+  .statusPending {
+    color: #b07a00;
+  }
+  
+  /* ─── Items section ─────────────────────────────────────────────────────────── */
+  .itemsSection {
+    padding: 24px 28px;
+  }
+  
+  .itemsTitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+  }
+  
+  .itemsList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .itemRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border, #e8e0d5);
+  }
+  
+  .itemRow:last-child {
+    border-bottom: none;
+  }
+  
+  .itemName {
+    font-size: 0.9375rem;
+    color: var(--color-text);
+  }
+  
+  .itemQty {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+  
+  .itemPrice {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+  
+  /* Total row */
+  .totalRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 2px solid var(--color-gold);
+  }
+  
+  .totalLabel {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-dark);
+  }
+  
+  .totalAmount {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-gold);
+  }
+  
+  /* ─── Mobile (390px) ────────────────────────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .searchBox {
+      flex-direction: column;
+    }
+  
+    .searchBtn {
+      width: 100%;
+      min-height: 48px;
+    }
+  
+    .orderHeader {
+      flex-direction: column;
+      padding: 20px;
+      gap: 12px;
+    }
+  
+    .orderMeta {
+      text-align: left;
+    }
+  
+    .stepperSection {
+      padding: 24px 16px;
+      overflow-x: auto;
+    }
+  
+    .stepper {
+      min-width: 400px;
+    }
+  
+    .stepCircle {
+      width: 40px;
+      height: 40px;
+      font-size: 1rem;
+    }
+  
+    .stepLabel {
+      font-size: 0.6rem;
+    }
+  
+    .infoGrid {
+      grid-template-columns: 1fr 1fr;
+    }
+  
+    .infoBox:last-child {
+      grid-column: span 2;
+    }
+  
+    .infoBox {
+      padding: 16px;
+    }
+  
+    .itemsSection {
+      padding: 20px 16px;
+    }
+  }

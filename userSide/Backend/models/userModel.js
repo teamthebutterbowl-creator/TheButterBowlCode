@@ -41,6 +41,20 @@ const userSchema = new mongoose.Schema(
       },
       default: "customer",
     },
+    resetPasswordToken: {
+      type: String,
+      default: undefined,
+    },
+    
+    resetPasswordExpire: {
+      type: Date,
+      default: undefined,
+    },
+    
+    lastLogin: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

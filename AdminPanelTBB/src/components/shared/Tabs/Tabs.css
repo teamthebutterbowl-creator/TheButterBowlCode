@@ -1,0 +1,29 @@
+.tabs-wrapper {
+  width: 100%;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tabs-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tabs-button {
+  padding: 12px 18px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #6b7280;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tabs-button.active {
+  color: #111827;
+  border-color: #ff4b3e;
+}
+
+.tabs-button:hover {
+  color: #111827;
+}

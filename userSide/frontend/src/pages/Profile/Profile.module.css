@@ -1,0 +1,188 @@
+/**
+ * Profile.module.css
+ * Place at: src/pages/Profile/Profile.module.css
+ */
+
+ .page {
+    padding-top: var(--space-xl);
+    min-height: 60vh;
+  }
+  
+  .wrapper {
+    max-width: 600px;
+    margin-inline: auto;
+  }
+  
+  /* ─── Loading / Error ───────────────────────────────────────────────────────── */
+  .loading,
+  .error {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--color-text-muted);
+  }
+  
+  .homeBtn {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 12px 24px;
+    background: var(--color-gold);
+    color: var(--color-dark);
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* ─── Profile card ──────────────────────────────────────────────────────────── */
+  .profileCard {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid var(--color-border, #e8e0d5);
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* ─── Avatar section ────────────────────────────────────────────────────────── */
+  .avatarSection {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 32px 28px;
+    background: var(--color-green);
+  }
+  
+  .avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--color-gold);
+    color: var(--color-dark);
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .userName {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 4px;
+  }
+  
+  .userRole {
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: capitalize;
+    letter-spacing: 0.08em;
+  }
+  
+  /* ─── Details section ───────────────────────────────────────────────────────── */
+  .detailsSection {
+    padding: 28px;
+    border-bottom: 1px solid var(--color-border, #e8e0d5);
+  }
+  
+  .sectionTitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 20px;
+  }
+  
+  .detailGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .detailBox {}
+  
+  .detailLabel {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+  }
+  
+  .detailValue {
+    font-size: 0.9375rem;
+    color: var(--color-dark);
+    font-weight: 500;
+  }
+  
+  /* ─── Actions ───────────────────────────────────────────────────────────────── */
+  .actions {
+    padding: 24px 28px;
+    display: flex;
+    gap: 12px;
+  }
+  
+  .ordersBtn {
+    flex: 1;
+    padding: 14px;
+    background: var(--color-gold);
+    color: var(--color-dark);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  
+  .ordersBtn:hover {
+    opacity: 0.9;
+  }
+  
+  .logoutBtn {
+    padding: 14px 24px;
+    background: transparent;
+    color: #b33a3a;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: 1.5px solid #b33a3a;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  
+  .logoutBtn:hover {
+    background: #b33a3a;
+    color: white;
+  }
+  
+  /* ─── Mobile ────────────────────────────────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .avatarSection {
+      padding: 24px 20px;
+    }
+  
+    .detailsSection {
+      padding: 20px;
+    }
+  
+    .detailGrid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  
+    .actions {
+      padding: 20px;
+      flex-direction: column;
+    }
+  
+    .logoutBtn {
+      width: 100%;
+    }
+  }

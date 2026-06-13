@@ -1,14 +1,13 @@
 import jwt from "jsonwebtoken";
+import User from "../models/userModel.js";
 
 /**
  * Protect middleware
- * - Reads JWT from Authorization: Bearer <token>
- * - Verifies token and attaches req.user = { id }
- * - Uses next(err) so centralized error handler responds
  */
-const protect = (req, res, next) => {
+const protect = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization || "";
+
     const token = authHeader.startsWith("Bearer ")
       ? authHeader.split(" ")[1]
       : null;
@@ -20,48 +19,56 @@ const protect = (req, res, next) => {
 
     if (!process.env.JWT_SECRET) {
       res.status(500);
-      throw new Error("JWT_SECRET is not set in environment variables");
+      throw new Error("JWT_SECRET is not set");
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.user = { id: decoded.id };
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      res.status(401);
+      throw new Error("User not found");
+    }
+
+    if (user.isActive === false) {
+      res.status(403);
+      throw new Error("User is deactivated");
+    }
+
+    req.user = user;
+
     next();
   } catch (error) {
-    // Invalid token / expired token should be a 401
     if (res.statusCode === 200) res.status(401);
     next(error);
   }
 };
 
 /**
- * Optional auth — for public routes that support both guest and logged-in users.
- * If a valid Bearer token is present, sets req.user; otherwise continues without error.
+ * Optional auth
  */
 export const optionalAuth = (req, res, next) => {
+  req.guestId = req.headers["x-guest-id"] || null;
   try {
+
+
     const authHeader = req.headers.authorization || "";
+
     const token = authHeader.startsWith("Bearer ")
       ? authHeader.split(" ")[1]
       : null;
 
-    if (!token) {
-      return next();
-    }
-
-    if (!process.env.JWT_SECRET) {
-      res.status(500);
-      throw new Error("JWT_SECRET is not set in environment variables");
-    }
+    if (!token) return next();
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     req.user = { id: decoded.id };
+
     next();
   } catch (error) {
-  // Invalid token on a public route — treat as guest (do not block checkout)
-    next();
+    next(); // ignore invalid token
   }
 };
 
 export default protect;
-

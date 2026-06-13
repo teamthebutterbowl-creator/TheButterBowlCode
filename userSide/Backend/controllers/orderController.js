@@ -1,6 +1,10 @@
 import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
 import User from "../models/userModel.js";
+import { sendOrderEmails } from "../services/orderEmailService.js";
+import Offer from "../models/offerModel.js";
+import Coupon from "../models/couponModel.js";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Populate paths used when returning orders with related data.
@@ -8,6 +12,8 @@ import User from "../models/userModel.js";
 const orderPopulate = [
   { path: "orderedItems.productId", select: "name price image category isAvailable" },
   { path: "user", select: "name email phone role" },
+  { path: "appliedOffer", select: "title discountType discountValue" },
+  { path: "appliedCoupon", select: "code type value" },
 ];
 
 /**
@@ -43,8 +49,9 @@ const buildOrderedItemsFromDb = async (items) => {
   for (const item of items) {
     const { productId, quantity } = item;
 
-    if (!productId || !quantity) {
-      const error = new Error("Each item must include productId and quantity");
+    // ✅ FIX #3: quantity validation — negative ya zero quantity reject karo
+    if (!productId || !quantity || quantity < 1) {
+      const error = new Error("Each item must include productId and valid quantity (min 1)");
       error.statusCode = 400;
       throw error;
     }
@@ -66,11 +73,13 @@ const buildOrderedItemsFromDb = async (items) => {
     const lineTotal = product.price * quantity;
     totalAmount += lineTotal;
 
+    // ✅ FIX #4: category save karo — category scope offers ke liye zaroori
     orderedItems.push({
       productId: product._id,
       name: product.name,
       quantity,
       price: product.price,
+      category: product.category,
     });
   }
 
@@ -82,7 +91,10 @@ const buildOrderedItemsFromDb = async (items) => {
 // @access  Public (optional JWT attaches user)
 export const createOrder = async (req, res, next) => {
   try {
-    const { orderedItems, customerDetails, paymentMethod } = req.body;
+    const { orderedItems, customerDetails, paymentMethod, couponCode } = req.body;
+
+    // ✅ FIX #1: guestId pehle generate karo — orderPayload se pehle
+    const guestId = !req.user?.id ? (req.guestId || uuidv4()) : null;
 
     if (!customerDetails?.name || !customerDetails?.phone || !customerDetails?.address) {
       res.status(400);
@@ -97,24 +109,128 @@ export const createOrder = async (req, res, next) => {
     const { orderedItems: validatedItems, totalAmount } =
       await buildOrderedItemsFromDb(orderedItems);
 
+    // ── STEP 1: Offer apply karo ──────────────────────────────
+    let offerDiscount = 0;
+    let appliedOffer = null;
+    const now = new Date();
+
+    const activeOffers = await Offer.find({
+      isActive: true,
+      $and: [
+        { $or: [{ startDate: { $lte: now } }, { startDate: null }] },
+        { $or: [{ endDate: { $gte: now } }, { endDate: null }] },
+      ],
+    });
+
+    // Best matching offer dhundo (highest discount)
+    for (const offer of activeOffers) {
+      if (offer.minimumOrder && totalAmount < offer.minimumOrder) continue;
+      if (offer.minimumCartValue && totalAmount < offer.minimumCartValue) continue;
+
+      let applicable = false;
+
+      if (offer.scope === "menu") {
+        applicable = true;
+      } else if (offer.scope === "category") {
+        applicable = validatedItems.some((item) =>
+          offer.applicableCategories?.some(
+            (cat) => cat.toString() === item.category?.toString()
+          )
+        );
+      } else if (offer.scope === "product") {
+        applicable = validatedItems.some((item) =>
+          offer.applicableProducts?.some(
+            (p) => p.toString() === item.productId.toString()
+          )
+        );
+      }
+
+      if (!applicable) continue;
+
+      let discount = 0;
+      if (offer.discountType === "percentage") {
+        discount = (totalAmount * offer.discountValue) / 100;
+        if (offer.maximumDiscount) discount = Math.min(discount, offer.maximumDiscount);
+      } else if (offer.discountType === "fixed") {
+        discount = offer.discountValue;
+      }
+
+      if (discount > offerDiscount) {
+        offerDiscount = discount;
+        appliedOffer = offer._id;
+      }
+    }
+
+    offerDiscount = Math.min(Math.round(offerDiscount), totalAmount);
+
+    // ── STEP 2: Coupon apply karo ─────────────────────────────
+    let couponDiscount = 0;
+    let appliedCoupon = null;
+
+    if (couponCode) {
+      const coupon = await Coupon.findOne({
+        code: couponCode.toUpperCase().trim(),
+        isActive: true,
+      });
+
+      if (
+        coupon &&
+        (!coupon.startDate || now >= coupon.startDate) &&
+        (!(coupon.expiryDate || coupon.endDate) || now <= (coupon.expiryDate || coupon.endDate)) &&
+        (!coupon.minimumOrder || totalAmount >= coupon.minimumOrder) &&
+        (!coupon.totalUsageLimit || coupon.usedCount < coupon.totalUsageLimit)
+      ) {
+        if (coupon.type === "percentage") {
+          couponDiscount = (totalAmount * coupon.value) / 100;
+          if (coupon.maximumDiscount)
+            couponDiscount = Math.min(couponDiscount, coupon.maximumDiscount);
+        } else if (coupon.type === "fixed") {
+          couponDiscount = coupon.value;
+        }
+
+        couponDiscount = Math.min(Math.round(couponDiscount), totalAmount);
+        appliedCoupon = coupon._id;
+      }
+    }
+
+    // ── STEP 3: Final amount calculate karo ──────────────────
+    const finalAmount = Math.max(0, totalAmount - offerDiscount - couponDiscount);
+
+    // ✅ FIX #1: user ya guestId — ek jagah handle, duplicate nahi
     const orderPayload = {
       orderedItems: validatedItems,
       customerDetails,
       paymentMethod,
       totalAmount,
+      offerDiscount,
+      couponDiscount,
+      finalAmount,
+      ...(appliedOffer && { appliedOffer }),
+      ...(appliedCoupon && { appliedCoupon }),
+      ...(req.user?.id ? { user: req.user.id } : { guestId }),
     };
 
-    // Logged-in user: optionalAuth sets req.user from JWT
-    if (req.user?.id) {
-      orderPayload.user = req.user.id;
+    const order = await Order.create(orderPayload);
+
+    // Coupon usedCount increment — sirf successful order ke baad
+    if (appliedCoupon) {
+      await Coupon.findByIdAndUpdate(appliedCoupon, { $inc: { usedCount: 1 } });
     }
 
-    const order = await Order.create(orderPayload);
-    await order.populate(orderPopulate);
+    const populatedOrder = await Order.findById(order._id).populate(orderPopulate);
+
+    await sendOrderEmails(populatedOrder);
+
+    const io = req.app.get("io");
+    io.emit("new-order", {
+      message: "New Order Received",
+      order: populatedOrder,
+    });
 
     res.status(201).json({
       success: true,
-      data: order,
+      guestId: order.guestId || null,
+      data: populatedOrder,
     });
   } catch (error) {
     if (error.statusCode) {
@@ -130,14 +246,29 @@ export const createOrder = async (req, res, next) => {
 // @access  Private/Admin
 export const getAllOrders = async (req, res, next) => {
   try {
+    const {
+      orderStatus,
+      paymentStatus,
+      paymentMethod,
+      orderNumber,
+      startDate,
+      endDate,
+    } = req.query;
+
     const filter = {};
 
-    if (req.query.orderStatus) {
-      filter.orderStatus = req.query.orderStatus;
+    if (orderStatus) filter.orderStatus = orderStatus;
+    if (paymentStatus) filter.paymentStatus = paymentStatus;
+    if (paymentMethod) filter.paymentMethod = paymentMethod;
+
+    if (orderNumber) {
+      filter.orderNumber = { $regex: orderNumber, $options: "i" };
     }
 
-    if (req.query.paymentStatus) {
-      filter.paymentStatus = req.query.paymentStatus;
+    if (startDate || endDate) {
+      filter.createdAt = {};
+      if (startDate) filter.createdAt.$gte = new Date(startDate);
+      if (endDate) filter.createdAt.$lte = new Date(endDate);
     }
 
     const orders = await Order.find(filter)
@@ -157,7 +288,7 @@ export const getAllOrders = async (req, res, next) => {
 
 // @desc    Get single order by ID
 // @route   GET /api/orders/:id
-// @access  Private (admin or order owner)
+// @access  Admin, logged-in owner, or guest with matching guestId
 export const getOrderById = async (req, res, next) => {
   try {
     const order = await Order.findById(req.params.id).populate(orderPopulate);
@@ -167,29 +298,36 @@ export const getOrderById = async (req, res, next) => {
       throw new Error("Order not found");
     }
 
-    const currentUser = await User.findById(req.user.id).select("role");
+    // ✅ FIX #2: Guest support — req.user nahi hoga toh crash nahi karega
+    if (req.user?.id) {
+      // Logged-in: admin ya order owner check karo
+      const currentUser = await User.findById(req.user.id).select("role");
 
-    if (!currentUser) {
-      res.status(401);
-      throw new Error("Not authorized");
+      if (!currentUser) {
+        res.status(401);
+        throw new Error("Not authorized");
+      }
+
+      const isAdmin =
+        currentUser.role === "admin" || currentUser.role === "superAdmin";
+      const orderUserId =
+        order.user?._id?.toString() || order.user?.toString();
+      const isOwner = orderUserId === req.user.id.toString();
+
+      if (!isAdmin && !isOwner) {
+        res.status(403);
+        throw new Error("Not authorized to view this order");
+      }
+    } else {
+      // Guest: guestId se verify karo
+      const requestGuestId = req.guestId;
+      if (!requestGuestId || order.guestId !== requestGuestId) {
+        res.status(403);
+        throw new Error("Not authorized to view this order");
+      }
     }
 
-    const isAdmin =
-      currentUser.role === "admin" || currentUser.role === "superAdmin";
-
-    const orderUserId =
-      order.user?._id?.toString() || order.user?.toString();
-    const isOwner = orderUserId === req.user.id.toString();
-
-    if (!isAdmin && !isOwner) {
-      res.status(403);
-      throw new Error("Not authorized to view this order");
-    }
-
-    res.status(200).json({
-      success: true,
-      data: order,
-    });
+    res.status(200).json({ success: true, data: order });
   } catch (error) {
     handleMongooseError(error, res);
     next(error);
@@ -223,11 +361,11 @@ export const updateOrderStatus = async (req, res, next) => {
     }
 
     const updatedOrder = await order.save();
-    await updatedOrder.populate(orderPopulate);
+    const populatedOrder = await Order.findById(updatedOrder._id).populate(orderPopulate);
 
     res.status(200).json({
       success: true,
-      data: updatedOrder,
+      data: populatedOrder,
     });
   } catch (error) {
     handleMongooseError(error, res);
@@ -240,31 +378,24 @@ export const updateOrderStatus = async (req, res, next) => {
 // @access  Public
 export const trackOrder = async (req, res, next) => {
   try {
-    // Read orderNumber from URL (e.g. ORD-1748513847362-X4KP)
     const { orderNumber } = req.params;
 
-    // Debug: which order the client is looking for
-    console.log("trackOrder — searching for orderNumber:", orderNumber);
-
-    // Find one order where orderNumber matches (not MongoDB _id)
     const order = await Order.findOne({ orderNumber });
 
-    // Debug: did we find it?
-    console.log("trackOrder — order found:", order ? "yes" : "no");
-
-    // If no order with that number, return 404
     if (!order) {
       res.status(404);
       throw new Error("Order not found");
     }
 
-    // Build response with only fields safe to show on a tracking page
     const trackingData = {
       orderNumber: order.orderNumber,
       orderStatus: order.orderStatus,
       paymentStatus: order.paymentStatus,
       paymentMethod: order.paymentMethod,
       totalAmount: order.totalAmount,
+      offerDiscount: order.offerDiscount,
+      couponDiscount: order.couponDiscount,
+      finalAmount: order.finalAmount,
       orderedItems: order.orderedItems,
       customerDetails: {
         name: order.customerDetails.name,
@@ -273,17 +404,11 @@ export const trackOrder = async (req, res, next) => {
       updatedAt: order.updatedAt,
     };
 
-    // Debug: sending tracking response
-    console.log("trackOrder — returning status:", order.orderStatus);
-
-    // Send success response (no password, no full address required for basic track)
     res.status(200).json({
       success: true,
       data: trackingData,
     });
   } catch (error) {
-    // Pass errors to centralized error handler
-    console.log("trackOrder error:", error.message);
     next(error);
   }
 };

@@ -1,7 +1,8 @@
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
+import { sendEmail } from "../utils/resendEmail.js";
+import crypto from "crypto";
 import User from "../models/userModel.js";
 
 const JWT_EXPIRES_IN = "7d";
@@ -121,6 +122,146 @@ export const getMe = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     data: user,
+  });
+});
+
+//forgot password feature
+
+// @desc Forgot Password
+export const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email: email.toLowerCase() });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // 1. Generate token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  // 2. Hash token for DB
+  user.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 min
+
+  await user.save();
+ 
+  // 3. Reset URL (frontend route)
+  const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+   
+  // 4. Email HTML
+  const html = `
+    <h2>Password Reset Request</h2>
+    <p>You requested a password reset.</p>
+    <p>Click below to reset your password:</p>
+    <a href="${resetUrl}" target="_blank">Reset Password</a>
+    <p>This link expires in 10 minutes.</p>
+  `;
+
+  try {
+    await sendEmail({
+      to: user.email,
+      subject: "Reset Your Password",
+      html,
+    });
+
+    res.json({
+      success: true,
+      message: "Reset email sent successfully",
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    res.status(500);
+    throw new Error("Email could not be sent");
+  }
+});
+
+export const resendResetEmail = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email: email.toLowerCase() });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // 1. Generate new token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  // 2. Overwrite old token
+  user.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+  await user.save();
+
+  const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+
+  const html = `
+    <h2>Reset Password Link (Resent)</h2>
+    <p>Click below to reset your password:</p>
+    <a href="${resetUrl}" target="_blank">Reset Password</a>
+    <p>This link expires in 10 minutes.</p>
+  `;
+
+  await sendEmail({
+    to: user.email,
+    subject: "Resend Password Reset Link",
+    html,
+  });
+
+  res.json({
+    success: true,
+    message: "Reset email resent successfully",
+  });
+});
+
+
+// @desc Reset Password
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+
+  const user = await User.findOne({
+    resetPasswordToken: hashedToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    res.status(400);
+    throw new Error("Invalid or expired reset token");
+  }
+
+  // hash new password
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(password, salt);
+
+  // clear reset fields
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+
+  await user.save();
+
+  res.json({
+    success: true,
+    message: "Password reset successful",
   });
 });
 

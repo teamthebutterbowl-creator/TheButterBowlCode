@@ -26,6 +26,11 @@ const orderedItemSchema = new mongoose.Schema(
       required: [true, "Item price is required"],
       min: [0, "Item price cannot be negative"],
     },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      default: null,
+    },
   },
   { _id: false }
 );
@@ -65,6 +70,11 @@ const orderSchema = new mongoose.Schema(
         required: [true, "Delivery address is required"],
         trim: true,
       },
+      email: {
+        type: String,
+        trim: true,
+        default: null,
+      },
     },
     // Set only when the customer is logged in; omitted for guest checkout
     user: {
@@ -82,7 +92,7 @@ const orderSchema = new mongoose.Schema(
     paymentStatus: {
       type: String,
       enum: {
-        values: ["pending", "paid", "failed"],
+        values: ["pending", "paid", "failed","processing"],
         message: "Payment status must be pending, paid, or failed",
       },
       default: "pending",
@@ -107,18 +117,54 @@ const orderSchema = new mongoose.Schema(
       required: [true, "Total amount is required"],
       min: [0, "Total amount cannot be negative"],
     },
+    // --- OFFERS & COUPONS ---
+    appliedOffer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Offer",
+      default: null,
+    },
+    appliedCoupon: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Coupon",
+      default: null,
+    },
+    offerDiscount: {
+      type: Number,
+      default: 0,
+    },
+    couponDiscount: {
+      type: Number,
+      default: 0,
+    },
+    finalAmount: {
+      type: Number,
+      default: 0,
+    },
+
+    guestId: {
+      type: String,
+      index: true,
+      default: null,
+    },
+    razorpayOrderId: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-// Auto-generate orderNumber for new orders: ORD-<timestamp>
-orderSchema.pre("save",  function () {
+// FIX: added next() — without it save() hangs forever
+orderSchema.pre("save", async function () {
   if (!this.orderNumber) {
-    this.orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+    this.orderNumber = `ORD-${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2, 6)
+      .toUpperCase()}`;
   }
-  
+
 });
 
 const Order = mongoose.model("Order", orderSchema);
