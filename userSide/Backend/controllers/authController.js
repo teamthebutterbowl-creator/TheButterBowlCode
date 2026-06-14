@@ -129,7 +129,10 @@ export const getMe = asyncHandler(async (req, res) => {
 
 // @desc Forgot Password
 export const forgotPassword = asyncHandler(async (req, res) => {
-  const { email } = req.body;
+  const { email, role} = req.body;
+
+  const BASE_URL=role==="admin"? process.env.ADMIN_DASHBOARD_URL:
+  process.env.FRONTEND_URL
 
   const user = await User.findOne({ email: email.toLowerCase() });
 
@@ -152,7 +155,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   await user.save();
  
   // 3. Reset URL (frontend route)
-  const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+  const resetUrl = `${BASE_URL}/reset-password/${resetToken}`;
    
   // 4. Email HTML
   const html = `

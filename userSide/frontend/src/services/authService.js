@@ -4,7 +4,11 @@ export const forgotPassword = async (email) => {
   const response = await fetch(`${API_BASE}/api/auth/forgot-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ 
+      email,
+      role:"customer"
+
+     }),
   });
   const data = await response.json();
   if (!response.ok || !data.success) throw new Error(data.message || "Failed to send reset email");

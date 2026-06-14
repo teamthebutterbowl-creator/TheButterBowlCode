@@ -30,7 +30,10 @@ const ForgotPasswordPage = () => {
     const res = await fetch(`${API_BASE}/api/auth/forgot-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ 
+        email,
+        role:"admin"
+      }),
     });
 
     const data = await res.json();
