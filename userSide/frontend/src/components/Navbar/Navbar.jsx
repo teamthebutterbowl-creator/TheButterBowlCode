@@ -112,6 +112,7 @@ export default function Navbar() {
         className={`${styles.mobileMenu} ${menuOpen ? styles.mobileOpen : ''}`}
         aria-hidden={!menuOpen}
       >
+
         <nav aria-label="Mobile navigation">
           {navLinks.map(({ label, path }) => (
             <NavLink
@@ -157,3 +158,4 @@ export default function Navbar() {
     </header>
   );
 }
+

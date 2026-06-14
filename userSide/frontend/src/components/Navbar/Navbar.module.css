@@ -163,7 +163,7 @@
   transform: translate(-50%, 50%) rotate(-45deg);
 }
 
-.mobileMenu {
+/* .mobileMenu {
   position: fixed;
   inset: calc(var(--nav-height) + var(--safe-top)) 0 0 0;
   background: var(--color-bg);
@@ -175,6 +175,23 @@
   transition: transform var(--transition-base);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+} */
+.mobileMenu {
+  position: fixed;
+  top: calc(var(--nav-height) + var(--safe-top));
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 80px);
+
+  z-index: 99999;
+  background: var(--color-bg);
+
+  padding: 12px 20px 20px;
+  overflow-y: auto;
+
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  
 }
 
 .mobileOpen {
@@ -184,12 +201,11 @@
 .mobileLink {
   display: flex;
   align-items: center;
-  min-height: 2.75rem;
+  min-height: 2rem;
   font-family: var(--font-heading);
-  font-size: 1.5rem;
-  padding-block: var(--space-md);
+  font-size: 1rem;
+  padding: 12px 0;
   border-bottom: 1px solid var(--color-border);
-  color: var(--color-text-muted);
 }
 
 .mobileLink.active {
@@ -198,7 +214,7 @@
 
 .mobileCart {
   display: block;
-  margin-top: var(--space-lg);
+  margin-top: 12px;
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 0.06em;
