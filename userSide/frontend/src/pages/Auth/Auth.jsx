@@ -104,17 +104,42 @@ export default function Auth() {
 
   const validateLogin = () => {
     const errors = {};
-    if (isEmpty(loginForm.email)) errors.email = 'Email is required';
-    if (isEmpty(loginForm.password)) errors.password = 'Password is required';
+    if(isEmpty(loginForm.email)){
+      errors.email="Email is required";
+    }else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginForm.email)){
+      errors.email="Please enter a valid email address";
+    }
+    if(isEmpty(loginForm.password)){
+      errors.password="Passowrd is required";
+    }else if(loginForm.password.length<8){
+      errors.password="password must be at least 8 character ";
+    }
     return errors;
+
+
   };
 
   const validateRegister = () => {
     const errors = {};
-    if (isEmpty(registerForm.name)) errors.name = 'Name is required';
-    if (isEmpty(registerForm.email)) errors.email = 'Email is required';
-    if (isEmpty(registerForm.phone)) errors.phone = 'Phone is required';
-    if (isEmpty(registerForm.password)) errors.password = 'Password is required';
+    if (isEmpty(registerForm.name)) {
+      errors.name = 'Name is required';
+    }
+    if (isEmpty(registerForm.email))
+      {
+        errors.email = 'Email is required';
+      }else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerForm.email)){
+         errors.email = 'Please enter a valid email address';
+      }
+    if (isEmpty(registerForm.phone)){
+    errors.phone = 'Phone is required';}
+    else if(!/^[6-9]\d{9}$/.test(registerForm.phone)){
+      errors.phone = 'Please enter a valid 10-digit mobile number';
+    }
+    if (isEmpty(registerForm.password)) 
+      {errors.password = 'Password is required';
+      }else if(registerForm.password.length<8){
+        errors.password="Password must be at least 8 characters";
+      }
     return errors;
   };
 
