@@ -15,7 +15,12 @@ export default function ForgotPassword() {
     if (!email.trim()) {
       setError("Email is required");
       return;
+    }else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      setError("Please enter a valid email address");
+       return;
     }
+     
+    
 
     setIsLoading(true);
     setError("");
