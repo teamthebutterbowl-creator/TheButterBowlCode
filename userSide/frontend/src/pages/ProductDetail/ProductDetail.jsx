@@ -82,8 +82,7 @@ export default function ProductDetail() {
   const [reviewSuccess, setReviewSuccess] = useState('');
 
   // Cart quantity
-  const inCart = cartList.find((c) => c.dish._id === id);
-  const qty = inCart?.qty ?? 0;
+  const[qty,setQuantity]=useState(1);
 
   // ─── Fetch product ───────────────────────────────────────────────────────
   useEffect(() => {
@@ -135,6 +134,12 @@ export default function ProductDetail() {
 
     if (id) fetchReviews();
   }, [id]);
+
+  // handle go to order
+  const handleGoToorder=()=>{
+    addItem(product,qty);
+    navigate('/order')
+  }
 
   // ─── Handle review form ──────────────────────────────────────────────────
   const handleReviewChange = (e) => {
@@ -330,7 +335,7 @@ if (updated.success) setProduct(updated.data);
                 <div className={styles.qtyControl}>
                   <button
                     className={styles.qtyBtn}
-                    onClick={() => removeItem(product._id)}
+                    onClick={() => setQuantity((q)=>Math.max(1,q-1))}
                     disabled={qty === 0}
                   >
                     −
@@ -338,14 +343,14 @@ if (updated.success) setProduct(updated.data);
                   <span className={styles.qtyValue}>{qty}</span>
                   <button
                     className={styles.qtyBtn}
-                    onClick={() => addItem(product)}
+                    onClick={() => setQuantity((q)=>q+1)}
                   >
                     +
                   </button>
                 </div>
                 <button
                   className={styles.addToCartBtn}
-                  onClick={() => navigate("/order")}
+                  onClick={handleGoToorder}
                 >
                   GO to order
                 </button>
