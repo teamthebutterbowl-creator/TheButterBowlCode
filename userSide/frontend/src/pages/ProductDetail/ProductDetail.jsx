@@ -140,10 +140,11 @@ export default function ProductDetail() {
     addItem(product,qty);
     // navigate('/order')
   }
- const completeOrder=()=>{
+
+   
+   const completeOrder=()=>{
      navigate('/order')
   }
-
   // ─── Handle review form ──────────────────────────────────────────────────
   const handleReviewChange = (e) => {
     const { name, value } = e.target;
@@ -355,6 +356,7 @@ if (updated.success) setProduct(updated.data);
                   className={styles.addToCartBtn}
                   onClick={handleGoToorder}
                 >
+
                   Add To Cart
                 </button>
                   <button
@@ -362,11 +364,21 @@ if (updated.success) setProduct(updated.data);
                   onClick={completeOrder}
                 >
                   Proceed to Checkout
+               
                 </button>
+
+                 <button
+                  className={styles.addToCartBtn}
+                  onClick={completeOrder}
+                >
+                  Complete Your Order
+                </button>
+                
               </div>
             ) : (
               <p className={styles.unavailable}>Currently Unavailable</p>
             )}
+            
 
           </div>
         </div>
