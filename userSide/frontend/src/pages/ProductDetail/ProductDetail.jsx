@@ -352,7 +352,7 @@ if (updated.success) setProduct(updated.data);
                   className={styles.addToCartBtn}
                   onClick={handleGoToorder}
                 >
-                  GO to order
+                  Add To Cart
                 </button>
               </div>
             ) : (
