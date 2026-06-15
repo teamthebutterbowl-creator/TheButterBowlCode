@@ -56,7 +56,7 @@ const AboutPage = () => {
       <section className={styles.hero}>
         <img
           className={styles.heroImage}
-          src="/about/About1.jpeg" alt="About us"
+          src="/about/About1.jpeg" 
           alt="A warm shared meal at a softly lit table, steam rising from a bowl"
         />
         <div className={styles.heroOverlay} aria-hidden="true" />

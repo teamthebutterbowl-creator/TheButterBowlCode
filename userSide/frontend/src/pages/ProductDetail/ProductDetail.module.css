@@ -296,19 +296,40 @@
 .addToCartBtn {
   flex: 1;
   min-height: 52px;
-  background: var(--color-gold);
-  color: var(--color-dark);
+  /* background: var(--color-gold); */
+  background: transparent;
+  border:  1px solid #000;
+  color: #0f2d24;
   font-family: var(--font-body);
   font-size: 0.9375rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   border-radius: 8px;
-  border: none;
   cursor: pointer;
   transition: opacity 0.2s, transform 0.15s;
 }
 
 .addToCartBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.proceedBtn{
+   flex: 1;
+  min-height: 52px;
+  /* background: var(--color-gold); */
+  background: #d4a017;
+  color: #0f2d24;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 8px;
+  border: 1px solid black;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.proceedBtn:hover {
   opacity: 0.9;
   transform: translateY(-1px);
 }

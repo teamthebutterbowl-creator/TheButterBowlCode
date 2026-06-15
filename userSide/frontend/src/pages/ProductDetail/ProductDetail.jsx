@@ -138,7 +138,10 @@ export default function ProductDetail() {
   // handle go to order
   const handleGoToorder=()=>{
     addItem(product,qty);
-    navigate('/order')
+    // navigate('/order')
+  }
+ const completeOrder=()=>{
+     navigate('/order')
   }
 
   // ─── Handle review form ──────────────────────────────────────────────────
@@ -353,6 +356,12 @@ if (updated.success) setProduct(updated.data);
                   onClick={handleGoToorder}
                 >
                   Add To Cart
+                </button>
+                  <button
+                  className={styles.proceedBtn}
+                  onClick={completeOrder}
+                >
+                  Proceed to Checkout
                 </button>
               </div>
             ) : (
