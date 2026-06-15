@@ -29,13 +29,13 @@ export function CartProvider({ children }) {
     }
   }, [items]);
 
-  const addItem = useCallback((dish) => {
+  const addItem = useCallback((dish,qty=1) => {
     const key = dish._id || dish.id;
     setItems((prev) => ({
       ...prev,
       [key]: {
         dish,
-        qty: (prev[key]?.qty ?? 0) + 1,
+        qty: (prev[key]?.qty ?? 0) + qty,
       },
     }));
   }, []);
