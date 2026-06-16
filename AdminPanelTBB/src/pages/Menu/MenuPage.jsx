@@ -413,7 +413,7 @@ const MenuPage = () => {
           </div>
           <div className="menu-table-card">
             <Table columns={columns} data={products} />
-            <Pagination total={totalPages} currentPage={currentPage} onPageChange={setCurrentPage} />
+            <Pagination total={totalPages} page={currentPage} onPageChange={setCurrentPage} />
           </div>
         </div>
 
@@ -424,6 +424,7 @@ const MenuPage = () => {
                 { key: 'general', label: 'General' },
               
               ]}
+              active={tab} 
               onChange={setTab}
             />
             <div className="editor-body">
