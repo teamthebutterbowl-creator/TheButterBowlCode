@@ -77,12 +77,10 @@ export default function Footer() {
           <h3 className={styles.colTitle}>Opening Hours</h3>
           <ul className={styles.hoursList}>
             <li>
-              <span>Mon – Thu</span>
+              <span>Mon – Sun
+              </span>
+              <br/>
               <span>{brand.hours.weekdays}</span>
-            </li>
-            <li>
-              <span>Fri – Sun</span>
-              <span>{brand.hours.weekend}</span>
             </li>
           </ul>
         </div>

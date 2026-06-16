@@ -5,10 +5,10 @@ export const brand = {
   cuisine: 'Premium North Indian Cuisine',
   phone: '+91 8851639355',
   email: 'teamthebutterbowl@gmail.com',
-  address: 'Noida Sector 18',
+  address: 'New Ashok Nagar, Delhi',
   hours: {
-    weekdays: '11:00 AM – 11:00 PM',
-    weekend: '11:00 AM – 12:00 AM',
+    weekdays: ' 12:00 PM – 12:00 AM ',
+    // weekend: '11:00 AM – 12:00 AM',
   },
   social: {
     instagram: 'https://www.instagram.com/the.butter.bowl?utm_source=qr&igsh=MWt3ZGx0dGx5cGJ5NQ==',
