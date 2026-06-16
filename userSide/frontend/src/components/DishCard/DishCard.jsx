@@ -1,9 +1,9 @@
-
+import React from 'react';
 import { formatPrice } from '../../utils/formatPrice';
 import FoodImage from '../FoodImage/FoodImage';
 import styles from './DishCard.module.css';
 
-export default function DishCard({ dish, compact = false, onClick , offer = null}) {
+function DishCard({ dish, compact = false, onClick , offer = null}) {
   return (
     <article
       className={`${styles.card} ${compact ? styles.compact : ''}`}
@@ -16,7 +16,7 @@ export default function DishCard({ dish, compact = false, onClick , offer = null
           src={dish.images?.[0] || ''}
           alt={dish.name}
           category={dish.category?.name}
-            loading="eager"
+            loading="lazy"
         />
           {offer && (
     <span className={styles.offerBadge}>
@@ -73,3 +73,5 @@ export default function DishCard({ dish, compact = false, onClick , offer = null
     </article>
   );
 }
+
+export default React.memo(DishCard)
