@@ -367,6 +367,7 @@ if (updated.success) setProduct(updated.data);
                
                 </button>
                 
+                
               </div>
             ) : (
               <p className={styles.unavailable}>Currently Unavailable</p>
