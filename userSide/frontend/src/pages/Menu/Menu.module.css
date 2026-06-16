@@ -36,61 +36,127 @@
 }
 /* Trending Deals */
 .dealsSection {
-  margin-bottom: 40px;
+  margin-bottom: 32px;
 }
 
 .dealsTitle {
-  font-size: 1.3rem;
+  margin-bottom: 18px;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 16px;
-  color: #1F3D2E;
+  color: #1f2937;
 }
 
 .dealCards {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
 }
 
 .dealCard {
+  position: relative;
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid rgba(255, 75, 62, 0.15);
+  border-radius: 24px;
+
+  padding: 22px;
+
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: linear-gradient(135deg, #fff8f0, #fff3e0);
-  border: 1px solid #f6ad55;
-  border-radius: 12px;
-  padding: 14px 18px;
-  min-width: 220px;
-  flex: 1;
-  max-width: 320px;
+  gap: 18px;
+
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.06);
+
+  transition: all 0.25s ease;
+}
+
+.dealCard:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 14px 32px rgba(0,0,0,0.10);
+}
+
+.dealCard::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 120px;
+  height: 120px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,75,62,.08),
+      transparent 70%
+    );
 }
 
 .dealBadge {
-  background: #e53e3e;
-  color: white;
-  font-size: 0.85rem;
-  font-weight: 800;
-  padding: 6px 12px;
-  border-radius: 8px;
-  white-space: nowrap;
   flex-shrink: 0;
+
+  min-width: 92px;
+  height: 92px;
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff4b3e,
+      #d62828
+    );
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  font-weight: 800;
+  font-size: 1rem;
+
+  padding: 10px;
+
+  box-shadow:
+    0 10px 20px rgba(255,75,62,.25);
+}
+
+.dealInfo {
+  flex: 1;
 }
 
 .dealName {
-  font-size: 0.95rem;
+  margin: 0;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: #1a202c;
-  margin: 0 0 4px;
+  color: #111827;
 }
 
 .dealDesc {
-  font-size: 0.8rem;
-  color: #718096;
-  margin: 0 0 4px;
+  margin: 6px 0 10px;
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .dealMin {
-  font-size: 0.75rem;
-  color: #e53e3e;
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  background: #fff5f5;
+  color: #dc2626;
+
+  font-size: 0.85rem;
   font-weight: 600;
 }

@@ -158,7 +158,7 @@ const getOfferForDish = (dish) => {
           {/* Trending Deals Section */}
 {activeOffers.length > 0 && (
   <div className={styles.dealsSection}>
-    <h2 className={styles.dealsTitle}>🔥 Today's Deals</h2>
+    <h2 className={styles.dealsTitle}>  Today's Special Offers</h2>
     <div className={styles.dealCards}>
       {activeOffers.map((offer) => (
         <div key={offer._id} className={styles.dealCard}>
