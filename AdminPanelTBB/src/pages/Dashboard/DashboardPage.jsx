@@ -146,7 +146,7 @@ useEffect(()=>{recentOrder();},[])
                   { <span>Recent 5 Orders</span> }
                   <h2> Orders</h2>
                 </div>
-                <button type="button" className="secondary-button">View all</button>
+              
               </div>
               <Table columns={orderColumns} data={Orders} />
             </div>
