@@ -366,13 +366,6 @@ if (updated.success) setProduct(updated.data);
                   Proceed to Checkout
                
                 </button>
-
-                 <button
-                  className={styles.addToCartBtn}
-                  onClick={completeOrder}
-                >
-                  Complete Your Order
-                </button>
                 
               </div>
             ) : (
