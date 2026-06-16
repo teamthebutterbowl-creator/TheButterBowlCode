@@ -20,47 +20,38 @@ export default function Menu() {
   const [categories, setCategories] = useState([]);
   const [activeOffers, setActiveOffers] = useState([]);
 
-  // Fetch all products from backend on mount
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true);
-      setError('');
 
-      try {
-        // Fetch only available products
-        const res = await fetch(`${API_BASE}/api/products?isAvailable=true`);
-        const data = await res.json();
+  //Optimized all the api with the help of promise all
+  useEffect(()=>{
+    const fetchAll=async()=>{
+      setIsLoading(true)//because data is not received yet 
+     try{
+      const[prodRes,catRes,offerRes]=await Promise.all([
+        fetch(`${API_BASE}/api/products?isAvailable=true`),
+        fetch(`${API_BASE}/api/categories`),
+        fetch(`${API_BASE}/offers/active`),
+      ])
+      const[prodData,catData,offerData]=await Promise.all([
+        prodRes.json(),
+        catRes.json(),
+        offerRes.json()
+      ])
+      setProducts(prodData.data||[])
+     setCategories(['All', ...catData.data.map((c) => c.name)])
+     setActiveOffers(offerData.data||[])
 
-        if (!res.ok || !data.success) {
-          throw new Error(data.message || 'Failed to load menu');
-        }
-
-        setProducts(data.data);
-      } catch (err) {
-        console.error('Menu fetch error:', err.message);
+     }catch(err){
+       console.error('Menu fetch error:', err.message);
         setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+     }finally{
+      setIsLoading(false)
+     }
 
-    fetchProducts();
-  }, []);
-  //fetch categories
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/api/categories`);
-        const data = await res.json();
-        if (data.success) {
-          setCategories(['All', ...data.data.map((c) => c.name)]);
-        }
-      } catch (err) {
-        console.error('Categories fetch error:', err);
-      }
-    };
-    fetchCategories();
-  }, []);
+    }
+    fetchAll();
+
+  },[])
+
   
 
   // Filter products by category on frontend (no extra API call needed)
@@ -72,30 +63,52 @@ export default function Menu() {
     [category, products]
   );
 
-  useEffect(() => {
-    fetch(`${API_BASE}/offers/active`)
-      .then((r) => r.json())
-      .then((data) => { if (data.success) setActiveOffers(data.data); })
-      .catch(() => {});
-  }, []);
-  
+  const productOfferMap = useMemo(() => {
+  const map = new Map();
+
+  activeOffers.forEach((offer) => {
+    if (offer.scope === 'product') {
+      offer.applicableProducts?.forEach((p) => {
+        map.set((p._id || p).toString(), offer);
+      });
+    }
+  });
+
+  return map;
+}, [activeOffers]);
+
+const categoryOfferMap = useMemo(() => {
+  const map = new Map();
+
+  activeOffers.forEach((offer) => {
+    if (offer.scope === 'category') {
+      offer.applicableCategories?.forEach((c) => {
+        map.set((c._id || c).toString(), offer);
+      });
+    }
+  });
+
+  return map;
+}, [activeOffers]);
+
+
   // Dish ke liye matching offer dhundo
-  const getOfferForDish = (dish) => {
-    return activeOffers.find((offer) => {
-      if (offer.scope === 'menu') return true;
-      if (offer.scope === 'product') {
-        return offer.applicableProducts?.some(
-          (p) => (p._id || p).toString() === dish._id.toString()
-        );
-      }
-      if (offer.scope === 'category') {
-        return offer.applicableCategories?.some(
-          (c) => (c._id || c).toString() === (dish.category?._id || dish.category)?.toString()
-        );
-      }
-      return false;
-    }) || null;
-  };
+const getOfferForDish = (dish) => {
+  // 1. product-level (highest priority)
+  const productOffer = productOfferMap.get(dish._id);
+  if (productOffer) return productOffer;
+
+  // 2. category-level
+  const categoryId = dish.category?._id || dish.category;
+  const categoryOffer = categoryOfferMap.get(categoryId);
+  if (categoryOffer) return categoryOffer;
+
+  // 3. menu-level fallback
+  const menuOffer = activeOffers.find((o) => o.scope === 'menu');
+  if (menuOffer) return menuOffer;
+
+  return null;
+};
 
   // Navigate to product detail page on card click
   const handleCardClick = (productId) => {
