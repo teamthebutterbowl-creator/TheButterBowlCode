@@ -18,9 +18,9 @@ export const brand = {
 };
 
 export const navLinks = [
-  { label: 'Home', path: '/' },
+  { label: 'Home', path: '/home' },
   { label: 'Our Story', path: '/about' },
-  { label: 'Menu', path: '/menu' },
+  { label: 'Menu', path: '/' },              
   { label: 'My Orders', path: '/my-orders' },
   { label: 'Contact', path: '/contact' },
  

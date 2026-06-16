@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../Logo/Logo';
 import Button from '../Button/Button';
 import { useCart } from '../../context/CartContext';
@@ -9,6 +10,7 @@ import { useAuth } from '../../context/AuthContext';
 
 export default function Navbar() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { itemCount } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -82,19 +84,19 @@ export default function Navbar() {
           </Link>
 
           {isLoggedIn ? (
-  <div className={styles.userMenu}>
-    <Link to="/profile" className={styles.userName}>
-      👤 {user?.name}
-    </Link>
-    <button onClick={logout} className={styles.logoutBtn}>
-      Logout
-    </button>
-  </div>
-) : (
-  <Button to="/auth" size="sm" className={styles.authBtn}>
-    Login / Register
-  </Button>
-)}
+            <div className={styles.userMenu}>
+              <Link to="/profile" className={styles.userName}>
+                👤 {user?.name}
+              </Link>
+              <button onClick={logout} className={styles.logoutBtn}>
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Button to="/auth" size="sm" className={styles.authBtn}>
+              Login / Register
+            </Button>
+          )}
 
           <button
             type="button"
@@ -127,35 +129,51 @@ export default function Navbar() {
               {label}
             </NavLink>
           ))}
-          <Link to="/order" className={styles.mobileCart} onClick={() => setMenuOpen(false)}>
-  Cart {itemCount > 0 && `(${itemCount})`}
-</Link>
 
-{isLoggedIn ? (
-  <>
-    <Link to="/profile" className={styles.mobileLink} onClick={() => setMenuOpen(false)}>
-      👤 My Profile
-    </Link>
-    <button
-      className={styles.mobileLogout}
-      onClick={() => { logout(); setMenuOpen(false); navigate('/'); }}
-    >
-      Logout
-    </button>
-  </>
-) : (
-  <Button
-    to="/auth"
-    variant="primary"
-    className={styles.mobileAuth}
-    onClick={() => setMenuOpen(false)}
-  >
-    Login / Register
-  </Button>
-)}
+          <Link
+            to="/order"
+            className={styles.mobileCart}
+            onClick={() => setMenuOpen(false)}
+          >
+            Cart {itemCount > 0 && `(${itemCount})`}
+          </Link>
+
+          {isLoggedIn ? (
+            <>
+              <Link
+                to="/profile"
+                className={styles.mobileLink}
+                onClick={() => setMenuOpen(false)}
+              >
+                👤 My Profile
+              </Link>
+              <button
+                className={styles.mobileLogout}
+                onClick={() => {
+                  logout();
+                  setMenuOpen(false);
+                  navigate('/');
+                }}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Button
+              to="/auth"
+              variant="primary"
+              className={styles.mobileAuth}
+              onClick={() => setMenuOpen(false)}
+            >
+              Login / Register
+            </Button>
+          )}
         </nav>
       </div>
     </header>
   );
+
 }
+
+
 
