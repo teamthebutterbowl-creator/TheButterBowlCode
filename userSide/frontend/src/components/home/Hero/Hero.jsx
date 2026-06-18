@@ -26,12 +26,27 @@ export default function Hero() {
 
         <div className={`${styles.visual} image-reveal`}>
           <div className={styles.imageFrame}>
-            <FoodImage
+            {/* <FoodImage
               src="/Image1.jpeg"
               alt="Premium butter chicken served in an elegant bowl"
               category="Main Course"
               loading="eager"
-            />
+            /> */}
+            <video 
+           poster="/Image1.jpeg"          
+            className={styles.foodVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            controls={false}
+            >
+            <source src="/Commercial _TBB_2.webm" type="video/webm" />
+      
+           {/* Fallback for browsers that don't support webm */}
+           <source src="/Commercial _TBB_2.mp4" type="video/mp4" />
+
+            </video>
             <div className={styles.accent} aria-hidden="true" />
           </div>
           <p className={styles.caption}>The Butter Bowl Special</p>
