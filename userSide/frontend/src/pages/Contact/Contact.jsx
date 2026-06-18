@@ -74,8 +74,8 @@ export default function Contact() {
             </div>
             <div className={styles.infoBlock}>
               <h3>Working Hours</h3>
-              <p>Mon – Thu: {brand.hours.weekdays}</p>
-              <p>Fri – Sun: {brand.hours.weekend}</p>
+              <p>Mon – Sun : {brand.hours.weekdays}</p>
+              {/* <p>Fri – Sun: {brand.hours.weekend}</p> */}
             </div>
           </div>
 
