@@ -54,11 +54,18 @@ const AboutPage = () => {
       {/* HERO                                                          */}
       {/* ============================================================ */}
       <section className={styles.hero}>
-        <img
-          className={styles.heroImage}
-          src="/about/About1.jpeg" alt="About us"
-          alt="A warm shared meal at a softly lit table, steam rising from a bowl"
-        />
+       <video
+       className={styles.heroImage}
+       autoPlay
+       loop
+       muted
+       playsInline
+       preload='auto'
+       poster="/about/About1.jpeg"
+      >
+        <source src="/About.webm" type="video/webm"/>
+        <source src="/tbbcreative.mp4" type="video/mp4"/>
+       </video>
         <div className={styles.heroOverlay} aria-hidden="true" />
 
         <div className={`${styles.heroContent} ${heroVisible ? styles.heroVisible : ''}`}>
