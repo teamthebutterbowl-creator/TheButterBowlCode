@@ -178,6 +178,7 @@ export const getCODStatus = asyncHandler(async (req, res) => {
 // @access  Private (admin only)
 export const toggleCOD = asyncHandler(async (req, res) => {
   const { enabled } = req.body;
+  console.log(typeof enabled);
 
   if (typeof enabled !== "boolean") {
     res.status(400);
@@ -198,3 +199,45 @@ export const toggleCOD = asyncHandler(async (req, res) => {
     data: { codEnabled: settings.codEnabled },
   });
 });
+
+
+
+//get online pay status
+ //GET= api/admin/pay-online-status
+export const getPayOnlineEnabled=asyncHandler(async(req,res)=>{
+ let settings= await Settings.findOne()
+ if(!settings){
+    settings = await Settings.create({ kitchenName: "My Kitchen" });
+ }
+ res.status(200).json(
+  {
+    success:true,
+    data: {onlinePayEnabled:settings.onlinePayEnabled}
+
+  })
+})
+
+//toggle online payment 
+//put api/admin/pay-online-status
+export const toggleOnlinePay=asyncHandler(async(req,res)=>{
+  const {enabled}=req.body
+  console.log(typeof enabled);
+  if(typeof enabled !=="boolean"){
+    res.status(400)
+    throw new Error("enabled must be true or false")
+  }
+  let settings = await  Settings.findOne()// if it does not exists then create new 
+  if(!settings){
+    settings=await Settings.create({ kitchenName: "My Kitchen" })
+  }
+  settings.onlinePayEnabled=enabled;
+  await settings.save()
+   res.status(200).json(
+    {
+      success:true,
+      message:`PayOnline ${enabled ? "enabled" :"disabled"} successfully `,
+      data:{onlinePayEnabled:settings.onlinePayEnabled}
+    }
+   )
+
+})

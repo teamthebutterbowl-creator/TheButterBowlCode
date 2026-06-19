@@ -6,14 +6,19 @@ import {
   logoutAdmin,
   deleteAdminAccount,
   getCODStatus,  
-  toggleCOD,    
+  toggleCOD, 
+  getPayOnlineEnabled ,
+  toggleOnlinePay,
 } from "../controllers/adminSettingController.js";
 import  protect from "../middleware/authMiddleware.js";
 import {adminOnly} from "../middleware/adminMiddleware.js"
 
 const router = express.Router();
 
+router.get("/pay-online-status",getPayOnlineEnabled)
+
 router.get("/cod-status", getCODStatus);
+
 
 // All routes below require: valid JWT + role === admin or superAdmin
 router.use(protect);
@@ -25,5 +30,6 @@ router.put("/change-password", changeAdminPassword);
 router.post("/logout", logoutAdmin);
 router.delete("/delete-account", deleteAdminAccount);
 router.put("/cod-status", toggleCOD); 
+router.put("/pay-online-status",toggleOnlinePay)
 
 export default router;

@@ -68,9 +68,26 @@ export const SettingsProvider = ({ children }) => {
         const res = await fetch(`${BASE_URL}/api/admin/cod-status`);
         if (!res.ok) return;
         const data = await res.json();
+
         setSettings((prev) => ({ ...prev, codEnabled: data.data.codEnabled }));
       } catch (err) {
         console.error('Failed to fetch COD status:', err);
+      }
+    };
+    fetchCOD();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchCOD = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/api/admin/pay-online-status`);
+        if (!res.ok) return;
+        const data = await res.json();
+        // console.log('pay-online-status response:', data);
+        setSettings((prev) => ({ ...prev, onlinePayEnabled: data.data.onlinePayEnabled }));
+      } catch (err) {
+        console.error('Failed to fetch online payment status:', err);
       }
     };
     fetchCOD();
@@ -138,6 +155,29 @@ export const SettingsProvider = ({ children }) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to update COD');
       setSettings((prev) => ({ ...prev, codEnabled: enabled }));
+      return { success: true };
+    } catch (err) {
+      return { success: false, message: err.message };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+
+    const togglePayOnline = useCallback(async (enabled) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${BASE_URL}/api/admin/pay-online-status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({ enabled }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to update Online pay ');
+      setSettings((prev) => ({ ...prev, onlinePayEnabled: enabled }));
       return { success: true };
     } catch (err) {
       return { success: false, message: err.message };
@@ -221,6 +261,7 @@ export const SettingsProvider = ({ children }) => {
         logout,
         deleteAccount,
         toggleCOD, 
+        togglePayOnline,
         loading,
         error,
       }}

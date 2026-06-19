@@ -4,6 +4,7 @@ import crypto from "crypto";
 import Razorpay from "razorpay";
 // Our MongoDB Order model
 import Order from "../models/orderModel.js";
+import Settings from "../models/settingsModel.js"
 
 // ✅ Memoized instance — credentials missing ho toh startup pe hi fail hoga
 let _razorpayInstance = null;
@@ -43,6 +44,12 @@ export const createRazorpayOrder = async (req, res, next) => {
     if (!order) {
       res.status(404);
       throw new Error("Order not found");
+    }
+
+     const settings = await Settings.findOne();
+         if (!settings?.onlinePayEnabled) {
+      res.status(403);
+      throw new Error("Online payment is currently disabled");
     }
 
     // ONLINE payments only
@@ -233,6 +240,11 @@ export const handleCOD = async (req, res, next) => {
     if (!orderId) {
       res.status(400);
       throw new Error("orderId is required");
+    }
+      const settings = await Settings.findOne();
+    if (!settings?.codEnabled) {
+      res.status(403);
+      throw new Error("Cash on delivery is currently disabled");
     }
 
     const order = await Order.findById(orderId);
