@@ -77,6 +77,10 @@ const settingsSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    onlinePayEnabled:{
+      type:Boolean,
+      default:true,
+    }
   },
   {
     timestamps: true,

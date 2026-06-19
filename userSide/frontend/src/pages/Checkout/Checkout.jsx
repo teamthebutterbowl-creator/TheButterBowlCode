@@ -19,6 +19,7 @@ export default function Checkout() {
 
   // ─── COD status from backend ─────────────────────────────────────────────
   const [isCODEnabled, setIsCODEnabled] = useState(true);
+  const [isPayOnlineEnabled ,setIsPayOnlineEnabled] = useState(true);
 
   useEffect(() => {
     const fetchCODStatus = async () => {
@@ -36,6 +37,25 @@ export default function Checkout() {
     };
     fetchCODStatus();
   }, []);
+
+  useEffect(()=>{
+    const fetchPayOnlineStatus=async()=>{
+      try{
+        const res= await fetch(`${API_BASE}/api/admin/pay-online-status`)
+        const data= await res.json()
+        //  console.log('Pay Online API response:', data); 
+        const enabled = data?.data?.onlinePayEnabled ;
+        //  console.log('isPayOnlineEnabled set to:', enabled);
+        setIsPayOnlineEnabled(enabled)
+        
+
+      }catch(errr){
+          setIsPayOnlineEnabled(true); 
+      }
+    };
+    fetchPayOnlineStatus();
+
+  },[])
 
   // ─── Form state ─────────────────────────────────────────────────────────
   const [form, setForm] = useState({
@@ -480,29 +500,53 @@ if (data.guestId) {
                     )}
 
                     {/* Online payment option */}
-                    <label
-                      className={`${styles.paymentOption} ${
-                        form.paymentMethod === 'ONLINE' ? styles.paymentSelected : ''
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="ONLINE"
-                        checked={form.paymentMethod === 'ONLINE'}
-                        onChange={handleChange}
-                      />
-                      <div className={styles.paymentContent}>
-                        <span className={styles.paymentIcon}>💳</span>
-                        <div>
-                          <p className={styles.paymentTitle}>Pay Online</p>
-                          <p className={styles.paymentDesc}>UPI, Cards, Net Banking via Razorpay</p>
-                        </div>
-                      </div>
-                    </label>
+                  {/* Online payment option */}
+{isPayOnlineEnabled ? (
+  <label
+    className={`${styles.paymentOption} ${
+      form.paymentMethod === 'ONLINE' ? styles.paymentSelected : ''
+    }`}
+  >
+    <input
+      type="radio"
+      name="paymentMethod"
+      value="ONLINE"
+      checked={form.paymentMethod === 'ONLINE'}
+      onChange={handleChange}
+    />
+    <div className={styles.paymentContent}>
+      <span className={styles.paymentIcon}>💳</span>
+      <div>
+        <p className={styles.paymentTitle}>Pay Online</p>
+        <p className={styles.paymentDesc}>UPI, Cards, Net Banking via Razorpay</p>
+      </div>
+    </div>
+  </label>
+) : (
+  <div
+    className={styles.paymentOption}
+    style={{
+      opacity: 0.5,
+      cursor: 'not-allowed',
+      background: 'var(--color-background-secondary)',
+    }}
+  >
+    <div className={styles.paymentContent}>
+      <span className={styles.paymentIcon}>💳</span>
+      <div>
+        <p className={styles.paymentTitle}>Pay Online</p>
+        <p className={styles.paymentDesc} style={{ color: '#dc2626' }}>
+          Online payment is currently unavailable. Please use Cash on Delivery.
+        </p>
+      </div>
+    </div>
+  </div>
+)}
+                   
 
                   </div>
                 </div>
+                  
 
                 {/* Coupon Code */}
                 <div className={styles.formCard}>

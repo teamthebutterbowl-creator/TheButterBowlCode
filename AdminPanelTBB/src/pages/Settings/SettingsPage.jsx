@@ -129,6 +129,7 @@ const SettingsPage = () => {
     logout,
     deleteAccount,
     toggleCOD,
+    togglePayOnline,
     loading,
   } = useSettings();
 
@@ -416,6 +417,49 @@ const SettingsPage = () => {
         onClick={async () => {
           const result = await toggleCOD(false);
           if (result.success) showToast('COD disabled');
+          else showToast(result.message, 'error');
+        }}
+        disabled={loading}
+      >
+        <X size={14} /> Disable
+      </button>
+    </div>
+  </div>
+</div>
+
+       {/* ── Pay Online ── */}
+<div className="settings-section">
+  <div className="settings-section-header">
+    <div className="settings-section-icon theme">
+      <Truck />
+    </div>
+    <h3>Pay Online</h3>
+  </div>
+  <div className="settings-section-body">
+    <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', margin: '0 0 12px' }}>
+      {settings.onlinePayEnabled
+        ? 'Online Pay is enabled. Customers can pay online'
+        : 'Online Pay is disabled. Customers can not pay online'}
+    </p>
+    <div className="theme-toggle-group">
+      <button
+        type="button"
+        className={`theme-toggle-btn ${settings.onlinePayEnabled ? 'active' : ''}`}
+        onClick={async () => {
+          const result = await togglePayOnline(true);
+          if (result.success) showToast('Pay Online Enabled');
+          else showToast(result.message, 'error');
+        }}
+        disabled={loading}
+      >
+        <Truck size={14} /> Enable
+      </button>
+      <button
+        type="button"
+        className={`theme-toggle-btn ${!settings.onlinePayEnabled ? 'active' : ''}`}
+        onClick={async () => {
+          const result = await togglePayOnline(false);
+          if (result.success) showToast('Pay Online disabled');
           else showToast(result.message, 'error');
         }}
         disabled={loading}

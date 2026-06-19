@@ -86,12 +86,13 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use('/api/contact', contactRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/admin", adminSettingsRoute);
 app.use("/api/admin",adminRoutes);
 app.use("/api/home-content", homeContentRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/offers",offerRoutes);
 app.use("/api/coupons", couponRoutes);
-app.use("/api/admin", adminSettingsRoute);
+
 // --- Error handling (order matters: 404 first, then global error handler) ---
 app.use(notFound);
 app.use(errorHandler);

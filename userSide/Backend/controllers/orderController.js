@@ -5,6 +5,7 @@ import { sendOrderEmails } from "../services/orderEmailService.js";
 import Offer from "../models/offerModel.js";
 import Coupon from "../models/couponModel.js";
 import { v4 as uuidv4 } from "uuid";
+import Settings from "../models/settingsModel.js"
 
 /**
  * Populate paths used when returning orders with related data.
@@ -105,6 +106,20 @@ export const createOrder = async (req, res, next) => {
       res.status(400);
       throw new Error("Payment method is required");
     }
+    
+    const settings = await Settings.findOne();
+
+if (paymentMethod === "COD" && !settings?.codEnabled) {
+  res.status(403);
+  throw new Error("Cash on delivery is currently unavailable");
+}
+
+if (paymentMethod === "ONLINE" && !settings?.onlinePayEnabled) {
+  res.status(403);
+  throw new Error("Online payment is currently unavailable");
+}
+
+
 
     const { orderedItems: validatedItems, totalAmount } =
       await buildOrderedItemsFromDb(orderedItems);
