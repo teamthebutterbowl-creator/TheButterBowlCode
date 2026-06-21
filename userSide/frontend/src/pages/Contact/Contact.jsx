@@ -52,8 +52,13 @@ export default function Contact() {
         <meta property="og:title" content="Contact Butter Bowl" />
         <meta property="og:description" content="Have a question or bulk order request? Reach out to Butter Bowl cloud kitchen." />
         <meta property="og:url" content="https://thebutterbowl.in/contact" />
-        <meta property="og:image" content="https://thebutterbowl.in/image1.jpeg" />
+        <meta property="og:image" content="https://thebutterbowl.in/Image1.jpeg" />
         <link rel="canonical" href="https://thebutterbowl.in/contact" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Butter Bowl – North Indian Cloud Kitchen" />
+  <meta name="twitter:description" content="Fresh North Indian meals delivered fast. Order now from Butter Bowl." />
+  <meta name="twitter:image" content="https://thebutterbowl.in/Image1.jpeg" />
       </Helmet>
       <header className="page-hero">
         <div className="container">
