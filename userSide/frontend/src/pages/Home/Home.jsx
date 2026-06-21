@@ -18,6 +18,11 @@ export default function Home() {
   <meta property="og:url" content="https://thebutterbowl.in/home" />
   <meta property="og:type" content="website" />
   <link rel="canonical" href="https://thebutterbowl.in/home" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Butter Bowl – North Indian Cloud Kitchen" />
+  <meta name="twitter:description" content="Fresh North Indian meals delivered fast. Order now from Butter Bowl." />
+  <meta name="twitter:image" content="https://thebutterbowl.in/Image1.jpeg" />
 </Helmet>
       <Hero />
       <WhyChooseUs />
