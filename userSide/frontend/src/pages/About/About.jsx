@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Home, Users, Heart, Tag, Percent, HandHeart } from 'lucide-react';
 import styles from './About.module.css';
 
@@ -50,6 +51,17 @@ const AboutPage = () => {
 
   return (
     <main className={styles.page}>
+
+       <Helmet>
+        <title>Our Story – Butter Bowl | The Bowl That Melts Hearts</title>
+        <meta name="description" content="Learn the story behind Butter Bowl — a cloud kitchen built around the warmth of home-cooked food. Comfort, care, and North Indian flavours delivered to you." />
+        <meta property="og:title" content="Our Story – Butter Bowl" />
+        <meta property="og:description" content="Food is more than ingredients. It's comfort, connection, and memory. Discover the Butter Bowl story." />
+        <meta property="og:image" content="https://thebutterbowl.in/about/About1.jpeg" />
+        <meta property="og:url" content="https://thebutterbowl.in/about" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://thebutterbowl.in/about" />
+      </Helmet>
       {/* ============================================================ */}
       {/* HERO                                                          */}
       {/* ============================================================ */}

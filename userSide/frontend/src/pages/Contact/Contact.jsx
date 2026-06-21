@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { brand } from '../../data/brand';
 import Button from '../../components/Button/Button';
 import styles from './Contact.module.css';
@@ -44,6 +45,16 @@ export default function Contact() {
   };
   return (
     <>
+
+     <Helmet>
+        <title>Contact Us – Butter Bowl | Cloud Kitchen</title>
+        <meta name="description" content="Get in touch with Butter Bowl for questions, feedback, or bulk orders. Call, email, or drop us a message — we'd love to hear from you." />
+        <meta property="og:title" content="Contact Butter Bowl" />
+        <meta property="og:description" content="Have a question or bulk order request? Reach out to Butter Bowl cloud kitchen." />
+        <meta property="og:url" content="https://thebutterbowl.in/contact" />
+        <meta property="og:image" content="https://thebutterbowl.in/image1.jpeg" />
+        <link rel="canonical" href="https://thebutterbowl.in/contact" />
+      </Helmet>
       <header className="page-hero">
         <div className="container">
           <span className="section-label">Get in Touch</span>
