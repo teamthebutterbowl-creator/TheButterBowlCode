@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import styles from './ProductDetail.module.css';
@@ -255,6 +256,45 @@ if (updated.success) setProduct(updated.data);
   return (
     <section className={styles.page}>
       <div className="container">
+
+
+              {/* ─── SEO: Dynamic meta + Schema ─── */}
+      <Helmet>
+        <title>{product.name} – Butter Bowl | North Indian Cloud Kitchen</title>
+        <meta name="description" content={`Order ${product.name} from Butter Bowl. ${product.description?.slice(0, 120)}...`} />
+        <meta property="og:title" content={`${product.name} – Butter Bowl`} />
+        <meta property="og:description" content={product.description?.slice(0, 150)} />
+        <meta property="og:image" content={product.images?.[0] || 'https://thebutterbowl.in/image1.jpeg'} />
+        <meta property="og:url" content={`https://thebutterbowl.in/menu/${id}`} />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href={`https://thebutterbowl.in/menu/${id}`} />
+
+        {/* MenuItem Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "MenuItem",
+            "name": product.name,
+            "description": product.description,
+            "image": product.images?.[0] || '',
+            "offers": {
+              "@type": "Offer",
+              "price": product.price,
+              "priceCurrency": "INR",
+              "availability": product.isAvailable
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock"
+            },
+            ...(product.totalReviews > 0 && {
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": parseFloat(product.averageRating).toFixed(1),
+                "reviewCount": product.totalReviews
+              }
+            })
+          })}
+        </script>
+      </Helmet>
 
         {/* Back button */}
         <button onClick={() => navigate(-1)} className={styles.backLink}>

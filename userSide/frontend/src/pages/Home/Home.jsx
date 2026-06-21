@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import Hero from '../../components/home/Hero/Hero';
 import WhyChooseUs from '../../components/home/WhyChooseUs/WhyChooseUs';
 import SignatureBowls from '../../components/home/SignatureBowls/SignatureBowls';
@@ -8,6 +9,16 @@ import Testimonials from '../../components/home/Testimonials/Testimonials';
 export default function Home() {
   return (
     <>
+      <Helmet>
+  <title>About Butter Bowl – North Indian Cloud Kitchen</title>
+  <meta name="description" content="Learn about Butter Bowl — a cloud kitchen serving fresh North Indian meals made with premium ingredients and timeless recipes." />
+  <meta property="og:title" content="About Butter Bowl – Cloud Kitchen" />
+  <meta property="og:description" content="Fresh North Indian meals delivered fast. Know our story." />
+  <meta property="og:image" content="https://thebutterbowl.in/image1.jpeg" />
+  <meta property="og:url" content="https://thebutterbowl.in/home" />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://thebutterbowl.in/home" />
+</Helmet>
       <Hero />
       <WhyChooseUs />
       <SignatureBowls />
