@@ -52,7 +52,7 @@ export default function Contact() {
         <meta property="og:title" content="Contact Butter Bowl" />
         <meta property="og:description" content="Have a question or bulk order request? Reach out to Butter Bowl cloud kitchen." />
         <meta property="og:url" content="https://thebutterbowl.in/contact" />
-        <meta property="og:image" content="https://thebutterbowl.in/image1.jpeg" />
+        <meta property="og:image" content="https://thebutterbowl.in/Image1.jpeg" />
         <link rel="canonical" href="https://thebutterbowl.in/contact" />
       </Helmet>
       <header className="page-hero">

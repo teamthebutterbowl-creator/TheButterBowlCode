@@ -124,7 +124,7 @@ const getOfferForDish = (dish) => {
   <meta name="description" content="Order fresh North Indian food online from Butter Bowl. Biryanis, curries, breads and more — delivered hot to your door." />
   <meta property="og:title" content="Butter Bowl – Order Fresh North Indian Food" />
   <meta property="og:description" content="Fresh North Indian meals delivered fast. Explore our menu and order now." />
-  <meta property="og:image" content="https://thebutterbowl.in/image1.jpeg" />
+  <meta property="og:image" content="https://thebutterbowl.in/Image1.jpeg" />
   <meta property="og:url" content="https://thebutterbowl.in/" />
   <meta property="og:type" content="website" />
   <link rel="canonical" href="https://thebutterbowl.in/" />

@@ -14,7 +14,7 @@ export default function Home() {
   <meta name="description" content="Learn about Butter Bowl — a cloud kitchen serving fresh North Indian meals made with premium ingredients and timeless recipes." />
   <meta property="og:title" content="About Butter Bowl – Cloud Kitchen" />
   <meta property="og:description" content="Fresh North Indian meals delivered fast. Know our story." />
-  <meta property="og:image" content="https://thebutterbowl.in/image1.jpeg" />
+  <meta property="og:image" content="https://thebutterbowl.in/Image1.jpeg" />
   <meta property="og:url" content="https://thebutterbowl.in/home" />
   <meta property="og:type" content="website" />
   <link rel="canonical" href="https://thebutterbowl.in/home" />
