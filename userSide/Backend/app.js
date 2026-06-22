@@ -20,6 +20,7 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import offerRoutes from "./routes/offerRoutes.js"
 import couponRoutes from "./routes/couponRoutes.js";
 import adminSettingsRoute from "./routes/adminSettingRoutes.js"
+import feedbackRoutes from "./routes/feedbackRoutes.js"
 // Load environment variables from .env file (must run before using process.env)
 
 
@@ -92,6 +93,7 @@ app.use("/api/home-content", homeContentRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/offers",offerRoutes);
 app.use("/api/coupons", couponRoutes);
+app.use("/api/feedback",feedbackRoutes)
 
 // --- Error handling (order matters: 404 first, then global error handler) ---
 app.use(notFound);
