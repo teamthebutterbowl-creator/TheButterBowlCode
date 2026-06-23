@@ -2,6 +2,7 @@ import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
 import User from "../models/userModel.js";
 import { sendOrderEmails } from "../services/orderEmailService.js";
+import {sendOrderConfimation} from "../services/whatsapp.service.js"
 import Offer from "../models/offerModel.js";
 import Coupon from "../models/couponModel.js";
 import { v4 as uuidv4 } from "uuid";
@@ -233,8 +234,17 @@ if (paymentMethod === "ONLINE" && !settings?.onlinePayEnabled) {
     }
 
     const populatedOrder = await Order.findById(order._id).populate(orderPopulate);
+    try{
+          await sendOrderConfimation(populatedOrder)
+    }catch(error){
+      console.error("WhatsApp Failed:", error.message);
+    }
 
-    await sendOrderEmails(populatedOrder);
+      try{
+       await sendOrderEmails(populatedOrder);
+      }catch(error){
+        console.error("Email service failed",error.message)
+      }
 
     const io = req.app.get("io");
     io.emit("new-order", {
