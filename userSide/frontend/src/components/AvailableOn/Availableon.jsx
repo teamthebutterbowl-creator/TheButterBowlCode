@@ -1,4 +1,4 @@
-import styles from './AvailableOn.module.css';
+import styles from './Availableon.module.css';
 
 
 const SWIGGY_URL = 'https://www.swiggy.com/restaurants/your-restaurant-link';
