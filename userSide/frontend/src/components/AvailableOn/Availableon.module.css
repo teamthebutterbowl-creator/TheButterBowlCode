@@ -1,0 +1,162 @@
+.card {
+  background-color: #FFF8EC;
+  border: 2px dashed #D4AF37;
+  border-radius: 18px;
+  padding: 22px 48px;
+  max-width: 720px;
+  margin: 0 auto 36px;
+  text-align: center;
+  font-family: inherit;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color: #C8902E;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.checkIcon {
+  font-size: 22px;
+}
+
+.title {
+  font-size: 22px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #555;
+  margin: 6px 0 18px;
+}
+
+.buttonRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 17px;
+  padding: 12px 36px;
+  border-radius: 10px;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+  flex: 1 1 auto;
+  min-width: 200px;
+  text-align: center;
+}
+
+.button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.brandIcon {
+  height: 20px;
+  width: auto;
+  display: block;
+}
+
+.swiggy {
+  background-color: #FC8019;
+}
+
+.zomato {
+  background-color: #E23744;
+}
+
+.footer {
+  font-size: 14px;
+  color: #444;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.star {
+  color: #C8902E;
+  font-size: 17px;
+}
+
+/* ---- Tablet ---- */
+@media (max-width: 768px) {
+  .card {
+    padding: 18px 32px;
+    max-width: 90%;
+    margin: 0 auto 28px;
+  }
+
+  .header,
+  .title {
+    font-size: 19px;
+  }
+
+  .button {
+    font-size: 15px;
+    padding: 11px 26px;
+    min-width: 160px;
+  }
+
+  .brandIcon {
+    height: 18px;
+  }
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 480px) {
+  .card {
+    padding: 16px 18px;
+    margin: 0 auto 24px;
+    max-width: 92%;
+  }
+
+  .header,
+  .title {
+    font-size: 17px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    margin: 5px 0 14px;
+  }
+
+  .buttonRow {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .button {
+    width: 100%;
+    min-width: unset;
+    font-size: 15px;
+    padding: 11px 18px;
+  }
+
+  .brandIcon {
+    height: 17px;
+  }
+
+  .footer {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}

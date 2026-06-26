@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import FilterBar from '../../components/FilterBar/FilterBar';
 import DishCard from '../../components/DishCard/DishCard';
+import AvailableOn from '../../components/AvailableOn/Availableon';
 import styles from './Menu.module.css';
 import { API_BASE } from '../../config/api';
 
@@ -149,6 +150,8 @@ const getOfferForDish = (dish) => {
 
       <section className={`section ${styles.menu}`}>
         <div className="container">
+
+          <AvailableOn/>
 
           {/* Category filter */}
           <FilterBar categories={categories} active={category} onChange={setCategory} />
