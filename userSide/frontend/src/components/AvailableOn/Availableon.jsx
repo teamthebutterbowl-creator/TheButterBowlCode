@@ -2,7 +2,7 @@ import styles from './Availableon.module.css';
 
 
 const SWIGGY_URL = 'https://www.swiggy.com/restaurants/your-restaurant-link';
-const ZOMATO_URL = 'https://www.zomato.com/your-city/your-restaurant-link';
+const ZOMATO_URL = 'https://zomato.onelink.me/xqzv/nc5m3hcj';
 
 // Simple check-circle icon (replaces ✅ emoji for a cleaner, consistent look)
 const CheckIcon = () => (
