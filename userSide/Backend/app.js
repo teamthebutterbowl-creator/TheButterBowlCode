@@ -29,6 +29,9 @@ const app = express();
 
 app.use(helmet()); //for necessary security
 
+console.log("FRONTEND_URL =", process.env.FRONTEND_URL);
+console.log("ADMIN_DASHBOARD_URL =", process.env.ADMIN_DASHBOARD_URL);
+
 // --- Global middleware ---
 app.use(cors(
     {
