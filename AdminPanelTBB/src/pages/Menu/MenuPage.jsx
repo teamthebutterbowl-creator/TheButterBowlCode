@@ -37,7 +37,7 @@ const MenuPage = () => {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '', category: '', price: '', isAvailable: 'yes',
-    description: '', fullDescription: '', images: []
+    description: '', images: []
   });
   const [formError, setFormError] = useState('');
   const [formLoading, setFormLoading] = useState(false);
@@ -115,7 +115,6 @@ const MenuPage = () => {
                 price: row.price ?? '',
                 isAvailable: row.isAvailable ? 'yes' : 'no',
                 description: row.description ?? '',
-                fullDescription: row.fullDescription ?? '',
                 images: row.images ?? []
               });
               setFormError('');
@@ -153,7 +152,7 @@ const MenuPage = () => {
         headers: authHeaders()
       });
       const data = await res.json();
-      console.log("DELETE RESPONSE:", data); // ← yeh log karo
+      console.log("DELETE RESPONSE:", data); 
       fetchProducts();
     } catch {}
   };
@@ -203,10 +202,6 @@ const MenuPage = () => {
   
       if (formData.description) {
         body.append("description", formData.description);
-      }
-  
-      if (formData.fullDescription) {
-        body.append("fullDescription", formData.fullDescription);
       }
   
       if (formData.images?.[0] instanceof File) {
@@ -286,10 +281,6 @@ const MenuPage = () => {
         body.append("description", formData.description);
       }
   
-      // full description
-      if (formData.fullDescription) {
-        body.append("fullDescription", formData.fullDescription);
-      }
   
       // image (single)
       if (formData.images?.[0] instanceof File) {
@@ -453,9 +444,7 @@ const MenuPage = () => {
               <TextArea label="Short Description" placeholder="Add a short item description."
                 value={formData.description}
                 onChange={(e) => setFormData(p => ({ ...p, description: e.target.value }))} />
-              <TextArea label="Full Description" placeholder="Add detailed menu information." rows={6}
-                value={formData.fullDescription}
-                onChange={(e) => setFormData(p => ({ ...p, fullDescription: e.target.value }))} />
+            
               <ImageUploader
   label="Item Images"
   onChange={(e) => {
