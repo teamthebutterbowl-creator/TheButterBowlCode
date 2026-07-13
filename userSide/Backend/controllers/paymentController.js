@@ -196,7 +196,7 @@ export const verifyPayment = async (req, res, next) => {
     if (!isValid) {
       await Order.findOneAndUpdate(
         { _id: orderId, paymentStatus: "processing" },
-        { $set: { paymentStatus: "failed" } }
+        { $set: { paymentStatus: "failed",  orderStatus: "Cancelled", } }
       );
       res.status(400);
       throw new Error("Invalid payment signature");
@@ -212,16 +212,35 @@ export const verifyPayment = async (req, res, next) => {
       { $set: { paymentStatus: "paid", orderStatus: "Confirmed" } },
       { new: true }
     );
+
     
     if (!updatedOrder) {
       res.status(400);
       throw new Error("Order already processed or Razorpay ID mismatch");
     }
+    const populatedOrder = await Order.findById(updatedOrder._id).populate(orderPopulate);
+    try {
+  await sendOrderConfimation(populatedOrder);
+} catch (error) {
+  console.error("WhatsApp Failed:", error.message);
+}
+
+try {
+  await sendOrderEmails(populatedOrder);
+} catch (error) {
+  console.error("Email service failed", error.message);
+}
+
+const io = req.app.get("io");
+io.emit("new-order", {
+  message: "New Order Received",
+  order: populatedOrder,
+});
     
     res.status(200).json({
       success: true,
       message: "Payment verified successfully",
-      data: updatedOrder,
+      data: populatedOrder,
     });
     
   } catch (error) {
@@ -290,6 +309,51 @@ message: "COD order confirmed successfully",
 data: updatedOrder,
 });
     
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Cancel online payment
+// @route   PUT /api/payment/cancel/:orderId
+// @access  Public (optionalAuth)
+
+export const cancelPayment = async (req, res, next) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      paymentMethod: "ONLINE",
+      paymentStatus: "processing",
+    });
+
+    if (!order) {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+
+    // Owner verification
+    const isOwner = req.user?.id
+      ? order.user?.toString() === req.user.id.toString()
+      : order.guestId && order.guestId === req.guestId;
+
+    if (!isOwner) {
+      res.status(403);
+      throw new Error("Not authorized");
+    }
+
+    await Order.findByIdAndUpdate(orderId, {
+      $set: {
+        paymentStatus: "failed",
+        orderStatus: "Cancelled",
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Payment cancelled",
+    });
   } catch (error) {
     next(error);
   }

@@ -3,6 +3,7 @@ import {
   createRazorpayOrder,
   verifyPayment,
   handleCOD,
+  cancelPayment
 } from "../controllers/paymentController.js";
 import { optionalAuth } from "../middleware/authMiddleware.js";
 import rateLimit from "express-rate-limit";
@@ -28,5 +29,7 @@ router.post("/verify", paymentLimiter, optionalAuth, verifyPayment);
 
 // POST /api/payment/cod
 router.post("/cod", paymentLimiter, optionalAuth, handleCOD);
+
+router.put("/cancel/:orderId", optionalAuth, cancelPayment);
 
 export default router;
