@@ -38,6 +38,7 @@ app.use(cors(
         origin:[
             process.env.FRONTEND_URL,
             process.env.ADMIN_DASHBOARD_URL,
+            process.env.CLIENT_URL
         ].filter(Boolean),
         credentials: true,
     }
