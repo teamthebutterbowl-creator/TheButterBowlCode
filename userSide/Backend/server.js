@@ -10,7 +10,7 @@ const server = createServer(app);
 // Attach socket.io
 const io = new Server(server, {
   cors: {
-    origin: [process.env.FRONTEND_URL,process.env.ADMIN_DASHBOARD_URL,process.env.CLIENT_URL],
+    origin: [process.env.FRONTEND_URL,process.env.ADMIN_DASHBOARD_URL,process.env.CLIENT_URL,"https://www.thebutterbowl.in"],
     credentials: true,
   },
 });
