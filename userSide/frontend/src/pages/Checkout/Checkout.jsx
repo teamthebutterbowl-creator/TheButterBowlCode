@@ -302,10 +302,26 @@ if (data.guestId) {
           }
         },
         modal: {
-          ondismiss: () => {
-            reject(new Error('Payment cancelled by user'));
-          },
+  ondismiss: async () => {
+    try {
+      const guestId = localStorage.getItem("guestId");
+      const token = localStorage.getItem("butterBowlToken");
+
+      await fetch(`${API_BASE}/api/payment/cancel/${order._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(guestId ? { "x-guest-id": guestId } : {}),
         },
+      });
+    } catch (err) {
+      console.error("Cancel payment API failed", err);
+    }
+
+    reject(new Error("Payment cancelled by user"));
+  },
+},
       };
 
       const rzp = new window.Razorpay(options);
@@ -316,17 +332,23 @@ if (data.guestId) {
   // ─── Main submit handler ──────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
+     console.log("Submit clicked");
 
     const validationErrors = validate();
+      console.log("2. Validation:", validationErrors);
     if (Object.keys(validationErrors).length > 0) {
+       console.log("3. Validation failed");
       setErrors(validationErrors);
       return;
     }
+      console.log("4. Validation passed");
 
     if (itemCount === 0) {
+       console.log("5. Cart is empty");
       setApiError('Your cart is empty. Please add items before checking out.');
       return;
     }
+      console.log("6. Creating order...");
 
     setIsLoading(true);
     setApiError('');
@@ -334,17 +356,21 @@ if (data.guestId) {
 
     try {
       const order = await createOrder();
+         console.log("7. Order created:", order);
 
       let finalOrder;
 
       if (form.paymentMethod === 'COD') {
+         console.log("8. COD flow");
         finalOrder = await handleCOD(order._id);
       } else {
+          console.log("8. ONLINE flow");
         finalOrder = await handleRazorpay(order);
       }
 
       clearCart();
       navigate('/order-confirmation', { state: { order: finalOrder } });
+       console.log("9. Success");
 
     } catch (error) {
       setApiError(error.message || 'Something went wrong. Please try again.');

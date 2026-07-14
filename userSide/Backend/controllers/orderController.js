@@ -95,7 +95,7 @@ export const createOrder = async (req, res, next) => {
   try {
     const { orderedItems, customerDetails, paymentMethod, couponCode } = req.body;
 
-    // ✅ FIX #1: guestId pehle generate karo — orderPayload se pehle
+    
     const guestId = !req.user?.id ? (req.guestId || uuidv4()) : null;
 
     if (!customerDetails?.name || !customerDetails?.phone || !customerDetails?.address) {
@@ -234,6 +234,7 @@ if (paymentMethod === "ONLINE" && !settings?.onlinePayEnabled) {
     }
 
     const populatedOrder = await Order.findById(order._id).populate(orderPopulate);
+    if (paymentMethod === "COD"){
     try{
           await sendOrderConfimation(populatedOrder)
     }catch(error){
@@ -251,6 +252,7 @@ if (paymentMethod === "ONLINE" && !settings?.onlinePayEnabled) {
       message: "New Order Received",
       order: populatedOrder,
     });
+  }
 
     res.status(201).json({
       success: true,
