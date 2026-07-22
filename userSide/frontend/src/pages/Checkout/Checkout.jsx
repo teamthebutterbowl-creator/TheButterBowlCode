@@ -203,6 +203,8 @@ if (data.guestId) {
   // ─── Step 2a: Handle COD payment ─────────────────────────────────────────
   const handleCOD = async (orderId) => {
     let response;
+     const token = localStorage.getItem('butterBowlToken');
+   
     try {
       const guestId = localStorage.getItem('guestId');
       response = await fetch(`${API_BASE}/api/payment/cod`, {
@@ -210,6 +212,7 @@ if (data.guestId) {
         headers: {
           'Content-Type': 'application/json',
           ...(guestId ? { 'x-guest-id': guestId } : {}),
+          ...(token? {Authorization: `Bearer ${token}`}:{})
         },
         body: JSON.stringify({ orderId }),
       });
