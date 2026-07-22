@@ -18,9 +18,9 @@ const orderPopulate = [
   { path: "appliedCoupon", select: "code type value" },
 ];
 
-/**
- * Map Mongoose errors to HTTP status codes before next(error).
- */
+
+  // Map Mongoose errors to HTTP status codes before next(error).
+ 
 const handleMongooseError = (error, res) => {
   if (error.name === "CastError") {
     res.status(400);
@@ -75,7 +75,7 @@ const buildOrderedItemsFromDb = async (items) => {
     const lineTotal = product.price * quantity;
     totalAmount += lineTotal;
 
-    // ✅ FIX #4: category save karo — category scope offers ke liye zaroori
+    // IX #4: category scope offers ke liye zaroori
     orderedItems.push({
       productId: product._id,
       name: product.name,
@@ -138,7 +138,7 @@ if (paymentMethod === "ONLINE" && !settings?.onlinePayEnabled) {
       ],
     });
 
-    // Best matching offer dhundo (highest discount)
+    // Best matching offer  (highest discount)
     for (const offer of activeOffers) {
       if (offer.minimumOrder && totalAmount < offer.minimumOrder) continue;
       if (offer.minimumCartValue && totalAmount < offer.minimumCartValue) continue;

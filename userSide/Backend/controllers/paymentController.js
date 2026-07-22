@@ -5,7 +5,16 @@ import Razorpay from "razorpay";
 // Our MongoDB Order model
 import Order from "../models/orderModel.js";
 import Settings from "../models/settingsModel.js"
+import { sendOrderEmails } from "../services/orderEmailService.js";
+import {sendOrderConfimation} from "../services/whatsapp.service.js"
 
+
+const orderPopulate = [
+  { path: "orderedItems.productId", select: "name price image category isAvailable" },
+  { path: "user", select: "name email phone role" },
+  { path: "appliedOffer", select: "title discountType discountValue" },
+  { path: "appliedCoupon", select: "code type value" },
+];
 // ✅ Memoized instance — credentials missing ho toh startup pe hi fail hoga
 let _razorpayInstance = null;
 
@@ -72,7 +81,7 @@ export const createRazorpayOrder = async (req, res, next) => {
       throw new Error("Payment already in progress or completed");
     }
 
-    // ✅ FIX #1: finalAmount use karo — coupon/offer discount ke baad wala amount
+   
     const billableAmount = order.finalAmount > 0 ? order.finalAmount : order.totalAmount;
 
     if (!billableAmount || billableAmount <= 0) {
@@ -103,8 +112,7 @@ export const createRazorpayOrder = async (req, res, next) => {
     });
     throw razorpayError;
   }
-
-    // ✅ FIX #2: razorpayOrderId DB mein save karo — webhook ke liye zaroori
+   
     await Order.findByIdAndUpdate(orderId, {
       razorpayOrderId: razorpayOrder.id,
     });
@@ -132,6 +140,7 @@ export const verifyPayment = async (req, res, next) => {
       razorpay_signature,
       orderId,
     } = req.body;
+    console.log(req.body)
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !orderId) {
       res.status(400);
@@ -144,6 +153,7 @@ export const verifyPayment = async (req, res, next) => {
       _id: orderId,
       paymentStatus: "processing",
     });
+    console.log("order in verify",order);
 
     if (!order) {
       res.status(404);
@@ -218,6 +228,7 @@ export const verifyPayment = async (req, res, next) => {
       res.status(400);
       throw new Error("Order already processed or Razorpay ID mismatch");
     }
+    console.log("order popultae",orderPopulate);
     const populatedOrder = await Order.findById(updatedOrder._id).populate(orderPopulate);
     try {
   await sendOrderConfimation(populatedOrder);
