@@ -7,7 +7,6 @@ import Order from "../models/orderModel.js";
 import Settings from "../models/settingsModel.js"
 import { sendOrderEmails } from "../services/orderEmailService.js";
 import {sendOrderConfimation} from "../services/whatsapp.service.js"
-import webhookEvent from "../models/webhookEventModel.js";
 import mongoose from "mongoose";
 
 
