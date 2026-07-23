@@ -7,6 +7,8 @@ import Order from "../models/orderModel.js";
 import Settings from "../models/settingsModel.js"
 import { sendOrderEmails } from "../services/orderEmailService.js";
 import {sendOrderConfimation} from "../services/whatsapp.service.js"
+import webhookEvent from "../models/webhookEventModel.js";
+import mongoose from "mongoose";
 
 
 const orderPopulate = [
@@ -289,6 +291,9 @@ export const handleCOD = async (req, res, next) => {
       throw new Error("This endpoint is only for COD payment method");
     }
      // ✅ Guest ownership verify karo
+     console.log("req user id ",req.user);
+     console.log("order user id",order.user);
+
 const isOwner = req.user?.id
 ? order.user?.toString() === req.user.id.toString()
 : order.guestId && order.guestId === req.guestId;
@@ -330,6 +335,7 @@ data: updatedOrder,
 // @access  Public (optionalAuth)
 
 export const cancelPayment = async (req, res, next) => {
+ 
   try {
     const { orderId } = req.params;
 
@@ -369,3 +375,177 @@ export const cancelPayment = async (req, res, next) => {
     next(error);
   }
 };
+
+//razorpay webhook 
+export const razorpayWebhook =async(req,res,next)=>{
+   let session;
+  try{
+    console.log("Webhook received");
+console.log(req.headers);
+console.log(req.body);
+ //signature
+ const signature=req.headers["x-razorpay-signature"];
+ if(!signature){
+  return res.status(400).json({
+    success:false,
+    message:"Missing razorpay signature"
+  })
+ }
+
+ const webhookSecret=process.env.RAZORPAY_WEBHOOK_SECRET;
+ if(!webhookSecret){
+  throw new Error("Razorpay secret is not configured");
+ }
+
+ //encrypt secret 
+ const expectedsignature=crypto.
+ createHmac("sha256",webhookSecret)
+ .update(req.body).digest("hex");
+
+ const expecSign=Buffer.from(expectedsignature,"hex");
+ const sign=Buffer.from(signature,"hex");
+ if(expecSign.length !== sign.length){
+  return res.status(400).json({
+    success:false,
+    message:"Invalid Signature Length"
+});
+ }
+
+ //comparios in both the siganture
+ const isValid= crypto.timingSafeEqual(
+  sign,expecSign
+ );
+
+    if (!isValid) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid webhook signature",
+      });
+    }
+
+    const payload = JSON.parse(req.body.toString("utf8"));//convert buffer to string to js object 
+    //mongo transaction start 
+    session=await mongoose.startSession();
+    session.startTransaction();
+    //step 4 
+
+    const payment = payload.payload?.payment?.entity;
+
+    if (!payment) {
+    console.log("Payment object not found.");
+    return res.sendStatus(200);
+}
+     const paymentId=payment.id;
+
+     //getting mongodb order id 
+     const mongoOrderId = payment.notes?.mongoOrderId;
+     if(!mongoOrderId){
+      console.log("Mongodb order is is missing in webhook payload ");
+      await session.abortTransaction();
+      return res.sendStatus(200)
+     }
+
+     const event = payload.event;
+     //switch case 
+     switch(event){
+      //payment captured 
+      case "payment.captured" :{
+      const paidAmount=payment.amount
+    const existingOrder = await Order.findById(mongoOrderId).session(session);
+    if (!existingOrder) {
+    await session.abortTransaction();
+    return res.sendStatus(200);
+}
+     if(existingOrder.finalAmount*100!==paidAmount){
+      console.log("amount mismatch");
+      await session.abortTransaction();
+      return res.sendStatus(200)
+     }
+     //checking duplicate webhook 
+     const updatedOrder= await Order.findOneAndUpdate({
+      _id:mongoOrderId,paymentStatus:{$ne:"paid"}
+     },
+    {$set:{paymentStatus:"paid",orderStatus:"Confirmed"}},
+  {session,
+new:true})
+
+  if(!updatedOrder){
+    await session.abortTransaction();
+    return res.sendStatus(200)
+  }
+
+  //populated order 
+  const populatedOrder = await Order.findById(updatedOrder._id).populate(orderPopulate).session(session)
+
+  //commit db transaction 
+  await session.commitTransaction();
+ 
+
+
+  
+
+  //send notifications
+  try{
+    await sendOrderEmails(populatedOrder)
+  } catch(error){
+    console.error("Order email failed:", error)
+  }
+  try{
+   await  sendOrderConfimation(populatedOrder)
+  }catch(error){
+    console.error("Order confirmation failed:", error)
+  }
+  //socket io 
+  try{
+  const io = req.app.get("io")
+  io.emit("new-order",{
+    message:"New Order Received",
+      order: populatedOrder,
+  })
+}catch(error){
+   console.error("Socket  failed:", error)
+}
+
+
+return res.sendStatus(200);
+      }
+      //payment failed 
+      case "payment.failed":{
+      //we will just get the order and upadate
+      await Order.findOneAndUpdate({_id:mongoOrderId, paymentStatus: { $ne: "paid" }},
+        {
+        paymentStatus: "failed",
+        orderStatus: "Cancelled",
+      },
+      {session})
+
+      await session.commitTransaction()
+      return res.sendStatus(200)
+ 
+      }
+       // ============================================================
+  // OTHER EVENTS
+  // ============================================================
+  default: {
+    console.log(`Ignoring webhook event: ${event}`);
+
+    await session.abortTransaction();
+
+    return res.sendStatus(200);
+  }
+      
+
+     }
+}catch(error){
+  if(session){
+    await session.abortTransaction();
+   
+  }
+  next(error);
+}
+finally {
+    if (session) {
+        session.endSession();
+    }
+}
+}
