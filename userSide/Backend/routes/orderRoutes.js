@@ -7,6 +7,7 @@ import {
   updateOrderStatus,
   getMyOrders,
   trackOrder,
+  checkpinCode
   
 } from "../controllers/orderController.js";
 import protect, { optionalAuth } from "../middleware/authMiddleware.js";
@@ -23,6 +24,9 @@ router.get("/my-orders", protect, getMyOrders);
 
 // GET /api/orders/track/:orderNumber — public order tracking (must be before /:id)
 router.get("/track/:orderNumber", trackOrder);
+
+//check pin code route 
+router.post("/check-pincode",checkpinCode);
 
 // GET /api/orders — admin only
 router.get("/", protect, adminOnly, getAllOrders);

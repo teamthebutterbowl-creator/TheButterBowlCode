@@ -66,14 +66,38 @@ const orderSchema = new mongoose.Schema(
         trim: true,
       },
       address: {
-        type: String,
-        required: [true, "Delivery address is required"],
-        trim: true,
+        houseNo:{
+          type:String,
+          trim:true,
+          required:[true,"House no is required"]
+        },
+        locality:{
+          type:String,
+          trim:true,
+          required:[true,"Locality  is required"]
+        },
+        landmark:{
+          type:String,
+          trim:true,
+          default:""
+        },
+        pincode:{
+          type:String,
+          trim:true,
+          required:[true,"Pin code is required"],
+           match: [/^\d{6}$/, "Invalid pincode"],
+        },
+        city:{
+          type:String,
+          default:"Delhi"
+        }
       },
       email: {
         type: String,
         trim: true,
-        default: null,
+        required:[true,"Email is required"],
+        lowercase: true,
+        match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address']
       },
     },
     // Set only when the customer is logged in; omitted for guest checkout
