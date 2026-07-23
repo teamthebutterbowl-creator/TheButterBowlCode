@@ -4,6 +4,7 @@ import { useCart } from '../../context/CartContext';
 import { API_BASE } from '../../config/api';
 import { formatPrice } from '../../utils/formatPrice';
 import { parseJsonResponse } from '../../utils/apiClient';
+import axios from "axios"
 import styles from './Checkout.module.css';
 
 export default function Checkout() {
@@ -16,6 +17,11 @@ export default function Checkout() {
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponData, setCouponData] = useState(null);
   const [couponWarning, setCouponWarning] = useState('');
+
+  const [isPincodeVerified, setIsPincodeVerified] = useState(false);
+const [checkingPincode, setCheckingPincode] = useState(false);
+const [pincodeMessage, setPincodeMessage] = useState("");
+const [pincodeError, setPincodeError] = useState("");
 
   // ─── COD status from backend ─────────────────────────────────────────────
   const [isCODEnabled, setIsCODEnabled] = useState(true);
@@ -61,7 +67,11 @@ export default function Checkout() {
   const [form, setForm] = useState({
     name: '',
     phone: '',
-    address: '',
+    houseNo: '',
+    locality:'',
+    landmark:'',
+    pincode:'',
+    email:'',
     paymentMethod: 'COD',
   });
 
@@ -83,30 +93,49 @@ export default function Checkout() {
   };
 
   // ─── Validate form fields ─────────────────────────────────────────────────
-  const validate = () => {
-    const newErrors = {};
-  
-    if (!form.name.trim()) {
-      newErrors.name = 'Name is required';
-    } else if (!/^[A-Za-z\s]{2,50}$/.test(form.name.trim())) {
-      newErrors.name = 'Enter a valid name';
-    }
-  
-    if (!form.phone.trim()) {
-      newErrors.phone = 'Phone number is required';
-    } else if (!/^[6-9]\d{9}$/.test(form.phone)) {
-      newErrors.phone = 'Enter a valid 10-digit mobile number';
-    }
-  
-    if (!form.address.trim()) {
-      newErrors.address = 'Delivery address is required';
-    } else if (form.address.trim().length < 10) {
-      newErrors.address = 'Please enter a complete address';
-    }
-  
-    return newErrors;
-  };
+ const validate = () => {
+  const newErrors = {};
 
+  // Name
+  if (!form.name.trim()) {
+    newErrors.name = "Name is required";
+  } else if (!/^[A-Za-z\s]{2,50}$/.test(form.name.trim())) {
+    newErrors.name = "Enter a valid name";
+  }
+
+  // Phone
+  if (!form.phone.trim()) {
+    newErrors.phone = "Phone number is required";
+  } else if (!/^[6-9]\d{9}$/.test(form.phone.trim())) {
+    newErrors.phone = "Enter a valid 10-digit mobile number";
+  }
+
+  // Email
+  if (!form.email.trim()) {
+    newErrors.email = "Email is required";
+  } else if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
+    newErrors.email = "Enter a valid email address";
+  }
+
+  // House No.
+  if (!form.houseNo.trim()) {
+    newErrors.houseNo = "House / Flat No. is required";
+  }
+
+  // Locality
+  if (!form.locality.trim()) {
+    newErrors.locality = "Locality is required";
+  }
+
+  // Pincode
+  if (!form.pincode.trim()) {
+    newErrors.pincode = "Pincode is required";
+  } else if (!/^\d{6}$/.test(form.pincode.trim())) {
+    newErrors.pincode = "Enter a valid 6-digit pincode";
+  }
+
+  return newErrors;
+};
   const validateCoupon = async () => {
     if (!couponCode.trim()) return;
 
@@ -146,6 +175,31 @@ export default function Checkout() {
     setCouponData(null);
   };
 
+  const handleCheckPinCode=async()=>{
+    if(!/^\d{6}$/.test(form.pincode.trim())){
+      setPincodeError("Enter a valid 6-digit pincode");
+    return;
+    }
+    setCheckingPincode(true);
+    try{
+      const res=await axios.post(`${API_BASE }/api/orders/check-pincode`,{
+        pincode:form.pincode.trim()
+      });
+        setIsPincodeVerified(true);
+        setPincodeMessage(res.data.message);
+         setPincodeError("");
+    }catch (err) {
+    setIsPincodeVerified(false);
+    setPincodeMessage("");
+    setPincodeError(err.response?.data?.message);
+    }
+    finally{
+       setCheckingPincode(false);
+    }
+    
+    
+  }
+
   // ─── Step 1: Create order in our backend ─────────────────────────────────
   const createOrder = async () => {
     const payload = {
@@ -158,7 +212,14 @@ export default function Checkout() {
       customerDetails: {
         name: form.name,
         phone: form.phone,
-        address: form.address,
+        email:form.email,
+        address: {
+    houseNo: form.houseNo,
+    locality: form.locality,
+    landmark: form.landmark,
+    pincode: form.pincode,
+    city: "Delhi",
+  },
       },
       paymentMethod: form.paymentMethod,
       couponCode: couponStatus === 'valid' ? couponCode : undefined,
@@ -419,65 +480,131 @@ if (data.guestId) {
               <form onSubmit={handleSubmit} noValidate>
 
                 {/* Delivery details */}
-                <div className={styles.formCard}>
-                  <h2 className={styles.cardTitle}>Delivery Details</h2>
+              {/* Delivery Details */}
+<div className={styles.formCard}>
+  <h2 className={styles.cardTitle}>Delivery Details</h2>
 
-                  <label className={styles.field}>
-                    <span className={styles.fieldLabel}>Full Name</span>
-                    <input
-                      type="text"
-                      name="name"
-                      value={form.name}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^A-Za-z\s]/g, '');
-                        setForm((prev) => ({ ...prev, name: value }));
-                        setErrors((prev) => ({ ...prev, name: '' }));
-                        setApiError('');
-                      }}
-                        maxLength={50}
-                       autoComplete="name"
-                    
-                      className={errors.name ? styles.inputError : ''}
-                    />
-                    {errors.name && <span className={styles.error}>{errors.name}</span>}
-                  </label>
+  {/* Name */}
+  <label className={styles.field}>
+    <span className={styles.fieldLabel}>Full Name</span>
+    <input
+      type="text"
+      name="name"
+      value={form.name}
+      onChange={handleChange}
+      className={errors.name ? styles.inputError : ""}
+    />
+    {errors.name && <span className={styles.error}>{errors.name}</span>}
+  </label>
 
-                  <label className={styles.field}>
-                    <span className={styles.fieldLabel}>Phone Number</span>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={form.phone}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, '').slice(0, 10);
-                        setForm((prev) => ({ ...prev, phone: value }));
-                        setErrors((prev) => ({ ...prev, phone: '' }));
-                        setApiError('');
-                      }}
-                      maxLength={10}
-                    inputMode="numeric"
-                     autoComplete="tel"
-                    
-                      className={errors.phone ? styles.inputError : ''}
-                    />
-                    {errors.phone && <span className={styles.error}>{errors.phone}</span>}
-                  </label>
+  {/* Phone */}
+  <label className={styles.field}>
+    <span className={styles.fieldLabel}>Phone Number</span>
+    <input
+      type="tel"
+      name="phone"
+      value={form.phone}
+      onChange={handleChange}
+      maxLength={10}
+      className={errors.phone ? styles.inputError : ""}
+    />
+    {errors.phone && <span className={styles.error}>{errors.phone}</span>}
+  </label>
 
-                  <label className={styles.field}>
-                    <span className={styles.fieldLabel}>Delivery Address</span>
-                    <textarea
-                      name="address"
-                      value={form.address}
-                      onChange={handleChange}
-                     
-                        rows={3}
-                        maxLength={250}
-                        autoComplete="street-address"
-                      className={errors.address ? styles.inputError : ''}
-                    />
-                    {errors.address && <span className={styles.error}>{errors.address}</span>}
-                  </label>
-                </div>
+  {/* Email */}
+  <label className={styles.field}>
+    <span className={styles.fieldLabel}>Email Address</span>
+    <input
+      type="email"
+      name="email"
+      value={form.email}
+      onChange={handleChange}
+      className={errors.email ? styles.inputError : ""}
+    />
+    {errors.email && <span className={styles.error}>{errors.email}</span>}
+  </label>
+
+  {/* House */}
+  <label className={styles.field}>
+    <span className={styles.fieldLabel}>House / Flat No.</span>
+    <input
+      type="text"
+      name="houseNo"
+      value={form.houseNo}
+      onChange={handleChange}
+      className={errors.houseNo ? styles.inputError : ""}
+    />
+    {errors.houseNo && <span className={styles.error}>{errors.houseNo}</span>}
+  </label>
+
+  {/* Locality */}
+  <label className={styles.field}>
+    <span className={styles.fieldLabel}>Area / Locality</span>
+    <input
+      type="text"
+      name="locality"
+      value={form.locality}
+      onChange={handleChange}
+      className={errors.locality ? styles.inputError : ""}
+    />
+    {errors.locality && (
+      <span className={styles.error}>{errors.locality}</span>
+    )}
+  </label>
+
+  {/* Landmark */}
+  <label className={styles.field}>
+    <span className={styles.fieldLabel}>
+      Landmark <small>(Optional)</small>
+    </span>
+    <input
+      type="text"
+      name="landmark"
+      value={form.landmark}
+      onChange={handleChange}
+    />
+  </label>
+
+  {/* Pincode */}
+  <label className={styles.field}>
+    <span className={styles.fieldLabel}>Pincode</span>
+
+    <div className={styles.pincodeRow}>
+      <input
+        type="text"
+        name="pincode"
+        value={form.pincode}
+        onChange={(e) => {
+          const value = e.target.value.replace(/\D/g, "").slice(0, 6);
+          setForm((prev) => ({ ...prev, pincode: value }));
+          setErrors((prev) => ({ ...prev, pincode: "" }));
+        }}
+        className={errors.pincode ? styles.inputError : ""}
+      />
+
+      <button
+        type="button"
+        className={styles.checkBtn}
+        onClick={handleCheckPinCode}
+        disabled={checkingPincode}
+      >
+        {checkingPincode ? "Checking..." : "Check"}
+      </button>
+    </div>
+
+    {errors.pincode && (
+      <span className={styles.error}>{errors.pincode}</span>
+    )}
+
+    {pincodeMessage && (
+      <span className={styles.success}>{pincodeMessage}</span>
+    )}
+
+    {pincodeError && (
+      <span className={styles.error}>{pincodeError}</span>
+    )}
+  </label>
+</div>
 
                 {/* Payment method */}
                 <div className={styles.formCard}>

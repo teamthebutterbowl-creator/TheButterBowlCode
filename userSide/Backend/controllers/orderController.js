@@ -91,17 +91,35 @@ const buildOrderedItemsFromDb = async (items) => {
 // @desc    Place a new order (guest or logged-in)
 // @route   POST /api/orders
 // @access  Public (optional JWT attaches user)
+
+// TODO: Move serviceable pincodes to database/admin settings when admin management is implemented.
+const ServiceablePinCodes =["110096", "110091" ,"110092" ,"201301","201302","201020","201010"]
 export const createOrder = async (req, res, next) => {
   try {
     const { orderedItems, customerDetails, paymentMethod, couponCode } = req.body;
 
     
     const guestId = !req.user?.id ? (req.guestId || uuidv4()) : null;
-
-    if (!customerDetails?.name || !customerDetails?.phone || !customerDetails?.address) {
+    console.log(customerDetails.address.email)
+    if (!customerDetails?.name || !customerDetails?.phone || !customerDetails?.address?.houseNo 
+      ||!customerDetails?.address?.locality||!customerDetails?.address?.pincode ||!customerDetails?.email) {
       res.status(400);
       throw new Error("Customer name, phone, and address are required");
     }
+    const pincode=customerDetails?.address?.pincode.trim()
+    if(!ServiceablePinCodes.includes(pincode)){
+      return res.status(400).json({
+        success:false,
+        message: "Delivery is not available in your area.",
+      })
+    }
+    if(!/^\d{6}$/.test(pincode)){
+      return res.status(400).json({
+         success: false,
+        message: "Invalid pincode",
+      })
+    }
+
 
     if (!paymentMethod) {
       res.status(400);
@@ -458,4 +476,21 @@ export const getMyOrders = async (req, res, next) => {
     handleMongooseError(error, res);
     next(error);
   }
-};
+}; 
+
+//check pin code availability 
+export const checkpinCode = async(req,res)=>{
+  const {pincode}=req.body;
+  
+  if(!ServiceablePinCodes.includes(pincode.trim())){
+    return res.status(400).json({
+      success: false,
+      message: "Delivery is not available in your area.",
+    })
+  }
+    return res.json({
+    success: true,
+    message: "Delivery is available.",
+  });
+
+}

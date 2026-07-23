@@ -99,9 +99,24 @@ export default function OrderConfirmation() {
               </div>
               <div className={styles.infoBox}>
                 <p className={styles.infoLabel}>Deliver To</p>
-                <p className={styles.infoValue}>
-                  {order.customerDetails?.address}
-                </p>
+                <div className={styles.infoBox}>
+  
+
+  <div className={styles.infoValue}>
+    <p>{order.customerDetails?.address?.houseNo}</p>
+
+    <p>{order.customerDetails?.address?.locality}</p>
+
+    {order.customerDetails?.address?.landmark && (
+      <p>{order.customerDetails.address.landmark}</p>
+    )}
+
+    <p>
+      {order.customerDetails?.address?.city} -{" "}
+      {order.customerDetails?.address?.pincode}
+    </p>
+  </div>
+</div>
               </div>
               <div className={styles.infoBox}>
                 <p className={styles.infoLabel}>Phone</p>
