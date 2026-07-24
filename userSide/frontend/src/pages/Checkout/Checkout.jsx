@@ -6,6 +6,7 @@ import { formatPrice } from '../../utils/formatPrice';
 import { parseJsonResponse } from '../../utils/apiClient';
 import axios from "axios"
 import styles from './Checkout.module.css';
+import { useAuth } from "../../context/AuthContext";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export default function Checkout() {
 const [checkingPincode, setCheckingPincode] = useState(false);
 const [pincodeMessage, setPincodeMessage] = useState("");
 const [pincodeError, setPincodeError] = useState("");
+const { isLoggedIn, user } = useAuth();
 
   // ─── COD status from backend ─────────────────────────────────────────────
   const [isCODEnabled, setIsCODEnabled] = useState(true);
@@ -75,6 +77,57 @@ const [pincodeError, setPincodeError] = useState("");
     paymentMethod: 'COD',
   });
 
+  // ─── Auto-fill saved address for logged-in users ─────────────────────────
+  // Address isn't stored on the User model — it lives on each Order's
+  // customerDetails.address. So for logged-in users we fetch their most
+  // recent order (my-orders is sorted createdAt desc, so data[0] is latest)
+  // and prefill houseNo/locality/landmark/pincode from it.
+  // `hasSavedAddress` only flips true once we actually get an address back,
+  // so first-time users (no past orders) never see the "we've filled it in" note.
+  const [hasSavedAddress, setHasSavedAddress] = useState(false);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setHasSavedAddress(false);
+      return;
+    }
+
+    const fetchLastAddress = async () => {
+      try {
+        const token = localStorage.getItem('butterBowlToken');
+        const res = await fetch(`${API_BASE}/api/orders/my-orders`, {
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
+        const data = await parseJsonResponse(res);
+
+        if (!res.ok || !data.success) return;
+
+        const lastAddress = data.data?.[0]?.customerDetails?.address;
+        const hasAnyField =
+          lastAddress &&
+          (lastAddress.houseNo || lastAddress.locality || lastAddress.landmark || lastAddress.pincode);
+
+        if (hasAnyField) {
+          setForm((prev) => ({
+            ...prev,
+            houseNo: lastAddress.houseNo || prev.houseNo,
+            locality: lastAddress.locality || prev.locality,
+            landmark: lastAddress.landmark || prev.landmark,
+            pincode: lastAddress.pincode || prev.pincode,
+          }));
+          setHasSavedAddress(true);
+        }
+      } catch {
+        // Prefill is a nice-to-have — silently skip on failure,
+        // user can still fill the address manually.
+      }
+    };
+
+    fetchLastAddress();
+  }, [isLoggedIn]);
+
   // ─── Error state ─────────────────────────────────────────────────────────
   const [errors, setErrors] = useState({});
 
@@ -95,7 +148,7 @@ const [pincodeError, setPincodeError] = useState("");
   // ─── Validate form fields ─────────────────────────────────────────────────
  const validate = () => {
   const newErrors = {};
-
+   if (!isLoggedIn) {
   // Name
   if (!form.name.trim()) {
     newErrors.name = "Name is required";
@@ -116,6 +169,7 @@ const [pincodeError, setPincodeError] = useState("");
   } else if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
     newErrors.email = "Enter a valid email address";
   }
+}
 
   // House No.
   if (!form.houseNo.trim()) {
@@ -202,6 +256,22 @@ const [pincodeError, setPincodeError] = useState("");
 
   // ─── Step 1: Create order in our backend ─────────────────────────────────
   const createOrder = async () => {
+
+    const customerDetails = {
+  address: {
+    houseNo: form.houseNo,
+    locality: form.locality,
+    landmark: form.landmark,
+    pincode: form.pincode,
+    city: "Delhi",
+  },
+};
+
+if (!isLoggedIn) {
+  customerDetails.name = form.name;
+  customerDetails.phone = form.phone;
+  customerDetails.email = form.email;
+}
     const payload = {
       orderedItems: cartList.map(({ dish, qty }) => ({
         productId: dish._id || dish.id,
@@ -209,18 +279,8 @@ const [pincodeError, setPincodeError] = useState("");
         quantity: qty,
         price: dish.price,
       })),
-      customerDetails: {
-        name: form.name,
-        phone: form.phone,
-        email:form.email,
-        address: {
-    houseNo: form.houseNo,
-    locality: form.locality,
-    landmark: form.landmark,
-    pincode: form.pincode,
-    city: "Delhi",
-  },
-      },
+      customerDetails,
+      
       paymentMethod: form.paymentMethod,
       couponCode: couponStatus === 'valid' ? couponCode : undefined,
     };
@@ -322,6 +382,12 @@ if (data.guestId) {
       throw new Error(rzpData.message || 'Failed to create Razorpay order');
     }
 
+    // Logged-in users don't fill name/phone in this form (backend already
+    // knows them from req.user.id), so prefill Razorpay from the auth user
+    // instead of the (empty) form fields.
+    const prefillName = isLoggedIn ? (user?.name || '') : form.name;
+    const prefillPhone = isLoggedIn ? (user?.phone || '') : form.phone;
+
     return new Promise((resolve, reject) => {
       const options = {
         key: rzpData.keyId,
@@ -331,8 +397,8 @@ if (data.guestId) {
         description: `Order ${order.orderNumber}`,
         order_id: rzpData.razorpayOrderId,
         prefill: {
-          name: form.name,
-          contact: form.phone,
+          name: prefillName,
+          contact: prefillPhone,
         },
         theme: { color: '#1F3D2E' },
         handler: async (response) => {
@@ -479,50 +545,63 @@ if (data.guestId) {
             <div className={styles.formSection}>
               <form onSubmit={handleSubmit} noValidate>
 
-                {/* Delivery details */}
+              
               {/* Delivery Details */}
 <div className={styles.formCard}>
   <h2 className={styles.cardTitle}>Delivery Details</h2>
 
-  {/* Name */}
-  <label className={styles.field}>
-    <span className={styles.fieldLabel}>Full Name</span>
-    <input
-      type="text"
-      name="name"
-      value={form.name}
-      onChange={handleChange}
-      className={errors.name ? styles.inputError : ""}
-    />
-    {errors.name && <span className={styles.error}>{errors.name}</span>}
-  </label>
+  {/* Name, Phone, Email — guest checkout only.
+      Logged-in users already have these on file; the backend
+      derives them from req.user.id, so we neither show nor send them. */}
+  {!isLoggedIn && (
+    <>
+      {/* Name */}
+      <label className={styles.field}>
+        <span className={styles.fieldLabel}>Full Name</span>
+        <input
+          type="text"
+          name="name"
+          value={form.name}
+          onChange={handleChange}
+          className={errors.name ? styles.inputError : ""}
+        />
+        {errors.name && <span className={styles.error}>{errors.name}</span>}
+      </label>
 
-  {/* Phone */}
-  <label className={styles.field}>
-    <span className={styles.fieldLabel}>Phone Number</span>
-    <input
-      type="tel"
-      name="phone"
-      value={form.phone}
-      onChange={handleChange}
-      maxLength={10}
-      className={errors.phone ? styles.inputError : ""}
-    />
-    {errors.phone && <span className={styles.error}>{errors.phone}</span>}
-  </label>
+      {/* Phone */}
+      <label className={styles.field}>
+        <span className={styles.fieldLabel}>Phone Number</span>
+        <input
+          type="tel"
+          name="phone"
+          value={form.phone}
+          onChange={handleChange}
+          maxLength={10}
+          className={errors.phone ? styles.inputError : ""}
+        />
+        {errors.phone && <span className={styles.error}>{errors.phone}</span>}
+      </label>
 
-  {/* Email */}
-  <label className={styles.field}>
-    <span className={styles.fieldLabel}>Email Address</span>
-    <input
-      type="email"
-      name="email"
-      value={form.email}
-      onChange={handleChange}
-      className={errors.email ? styles.inputError : ""}
-    />
-    {errors.email && <span className={styles.error}>{errors.email}</span>}
-  </label>
+      {/* Email */}
+      <label className={styles.field}>
+        <span className={styles.fieldLabel}>Email Address</span>
+        <input
+          type="email"
+          name="email"
+          value={form.email}
+          onChange={handleChange}
+          className={errors.email ? styles.inputError : ""}
+        />
+        {errors.email && <span className={styles.error}>{errors.email}</span>}
+      </label>
+    </>
+  )}
+
+  {hasSavedAddress && (
+    <p className={styles.success} style={{ marginBottom: '0.75rem' }}>
+      We've filled in your saved address. Feel free to edit any field below if it's changed.
+    </p>
+  )}
 
   {/* House */}
   <label className={styles.field}>
@@ -655,7 +734,7 @@ if (data.guestId) {
                       </div>
                     )}
 
-                    {/* Online payment option */}
+                  
                   {/* Online payment option */}
 {isPayOnlineEnabled ? (
   <label
