@@ -100,12 +100,27 @@ export const createOrder = async (req, res, next) => {
 
     
     const guestId = !req.user?.id ? (req.guestId || uuidv4()) : null;
-    console.log(customerDetails.address.email)
-    if (!customerDetails?.name || !customerDetails?.phone || !customerDetails?.address?.houseNo 
-      ||!customerDetails?.address?.locality||!customerDetails?.address?.pincode ||!customerDetails?.email) {
-      res.status(400);
-      throw new Error("Customer name, phone, and address are required");
-    }
+    if(!customerDetails?.address?.houseNo ||
+       !customerDetails?.address?.locality ||
+      !customerDetails?.address?.pincode){
+       return res.status(400).json({
+        success:false,
+        message: "Delivery address is required",
+      })
+      }
+      if(!req.user?.id){
+        if(!customerDetails?.name||
+          !customerDetails?.email ||
+          !customerDetails?.phone
+        ){
+        return res.status(400).json({
+        success:false,
+        message: "Customer name, phone and email are required",
+      })
+     }
+      }
+     
+
     const pincode=customerDetails?.address?.pincode.trim()
     if(!ServiceablePinCodes.includes(pincode)){
       return res.status(400).json({
@@ -119,6 +134,24 @@ export const createOrder = async (req, res, next) => {
         message: "Invalid pincode",
       })
     }
+     let finalCustomerDetails=customerDetails
+      if(req.user?.id){
+        const user = await User.findById(req.user.id).select("name email phone");
+
+        if (!user) {
+  return res.status(404).json({
+    success: false,
+    message: "User not found",
+  });
+}
+        finalCustomerDetails={
+          name:user.name,
+          email:user.email,
+          phone:user.phone,
+          address:customerDetails.address,
+        }
+
+      }
 
 
     if (!paymentMethod) {
@@ -233,7 +266,7 @@ if (paymentMethod === "ONLINE" && !settings?.onlinePayEnabled) {
     // ✅ FIX #1: user ya guestId — ek jagah handle, duplicate nahi
     const orderPayload = {
       orderedItems: validatedItems,
-      customerDetails,
+      customerDetails:finalCustomerDetails,
       paymentMethod,
       totalAmount,
       offerDiscount,
